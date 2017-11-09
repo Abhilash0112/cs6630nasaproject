@@ -1,3 +1,24 @@
+h1 {
+	font-family:'Orbitron', sans-serif;
+	text-align:center;
+}
+
+svg {
+	display:block;
+	margin:auto;
+}
+
+.main {
+	width:75%;
+	margin:auto;
+	padding:10px;
+}
+
+.countries {
+    stroke:#f7f7f7;
+    fill:#d9d9d9;
+}
+
 #graticules {
 	fill:none;
 	stroke:gray;

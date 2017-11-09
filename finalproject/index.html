@@ -5,24 +5,29 @@
     <meta charset="UTF-8">
     <title>Fireballs, Meteorites, and Future Impact Events</title>
     <link rel="stylesheet" href="public/css/style.css"/>
+	<link href="https://fonts.googleapis.com/css?family=Orbitron:900" rel="stylesheet">
     <script src="https://d3js.org/d3.v4.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
 </head>
 
 <body>
-<h1>Fireballs, Meteorites, and Future Impact Events</h1>
+<div class="main">
+	<h1>Fireballs, Meteorites, and Future Impact Events</h1>
 
-<div id="mapView">
-	<svg width="1000" height="450">
-		<g id="map"></g>
-		<g id="graticules"></g>
-	</svg>
-</div>
+	<div id="mapView">
+		<svg width="850" height="425">
+			<g id="map"></g>
+			<g id="graticules"></g>
+		</svg>
+	</div>
 
-<div id = "timelineView">
-</div>
+	<div id = "timelineView">
+		(timeline)
+	</div>
 
-<div id = "tableView">
+	<div id = "tableView">
+		(table)
+	</div>
 </div>
 
 <script type="application/javascript" src="public/js/map.js"></script>

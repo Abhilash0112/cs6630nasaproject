@@ -3,7 +3,7 @@ class Map {
      * Constructor for the Map
      */
 	constructor() {
-		this.projection = d3.geoNaturalEarth1().scale(150);
+		this.projection = d3.geoNaturalEarth1().scale(150).translate([420, 210]);
     };
 	
 	/**
@@ -24,7 +24,8 @@ class Map {
 			.attr("id", function(d) {
 				return d.id;
 			})
-			.attr("d", path);
+			.attr("d", path)
+			.classed("countries", true);
 		d3.select("#graticules")
 			.append("path")
 			.datum(graticule)
