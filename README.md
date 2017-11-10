@@ -1,37 +1,16 @@
-## Welcome to GitHub Pages
+## CS6630 NASA Astrological Dataset
 
-You can use the [editor on GitHub](https://github.com/rajathjavali/cs6630nasaproject/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+This project deals with visualization of events observerd in the past such as Meteorites and Fireballs happened on Earth. The [Project Proposal](https://github.com/rajathjavali/cs6630nasaproject/blob/master/ProjectProposal.pdf) has the details on the proposed visualization and its interaction.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Data Processing
 
-### Markdown
+The data is obtained from [NASA open datasets](https://www.nasa.gov/open/data.html), which has details of each and every events. The data can be obtained in various file formats, which helps reduce the processing time required for academic projects.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+### Visualization
+We have three main forms of visualizations in order to represent the dataset and provide access to different comparisions between the datasets. You can explore more [here](https://github.com/rajathjavali/cs6630nasaproject/blob/master/finalproject/index.html).
 
-```markdown
-Syntax highlighted code block
+The main form of visualization is a MAP with locations of various events highlighted. Interaction with the markers help in getting details of individual event as a tooltip. 
 
-# Header 1
-## Header 2
-### Header 3
+The second visualization represents the timeline, encoding number of each events over the years. Interaction with this visualization effectively showcases the changes on to the MAP, indicating all such events in the selected year/years.
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/rajathjavali/cs6630nasaproject/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+The third visualization helps with analysing the numeric data and also look at other details of each such events. We have a semantic zooming table, which indicates the main categories initially and displaying the interested details on interaction. This also encodes various metrics and charts to compare the data between events and how the changes affected the impact.
