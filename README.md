@@ -7,7 +7,7 @@ This project deals with visualization of events observerd in the past such as Me
 The data is obtained from [NASA open datasets](https://www.nasa.gov/open/data.html), which has details of each and every events. The data can be obtained in various file formats, which helps reduce the processing time required for academic projects.
 
 ### Visualization
-We have three main forms of visualizations in order to represent the dataset and provide access to different comparisions between the datasets. You can explore more [here](../blob/master/finalproject/index.html).
+We have three main forms of visualizations in order to represent the dataset and provide access to different comparisions between the datasets. You can explore more [here](../blob/master/finalproject/).
 
 The main form of visualization is a MAP with locations of various events highlighted. Interaction with the markers help in getting details of individual event as a tooltip. 
 
