@@ -25,3 +25,15 @@ svg {
 	stroke-width:1px;
 	opacity:0.1;
 }
+
+.meteors {
+	fill: red;
+	stroke: red;
+}
+
+.fireballs {
+	fill: orange;
+	stroke: orange;
+	stroke-width:1px;
+	opacity: 0.6;
+}
