@@ -34,12 +34,12 @@ class Map {
 			.attr("d", path);
 	}
 
-    updateMap(type, vizData) {
+    updateMap(vizData) {
     	let _this = this;
     	let markers, newCircle;
-    	if(vizData && type == "meteors"){
+    	if(vizData.meteors){
 			
-			markers = _this.meteors.selectAll(".meteros").data(vizData);
+			markers = _this.meteors.selectAll(".meteors").data(vizData.meteors);
 			newCircle = markers.enter().append("circle");
 
 			markers.exit().remove();
@@ -52,24 +52,24 @@ class Map {
 						return _this.projection([d.reclong, d.reclat])[1];
 					})
 					.attr("r", 1)
-					.attr("class", d=>type);
+					.attr("class", "meteors");
     	}
-    	else if(vizData && type == "fireballs"){
-    		let min_small = d3.min(vizData, function(d){return parseFloat(d["Calculated Total Impact Energy (kt)"]);}) * 1000;
-    		let max_small = d3.max(vizData, function(d){
+    	if(vizData.fireballs){
+    		let min_small = d3.min(vizData.fireballs, function(d){return parseFloat(d["Calculated Total Impact Energy (kt)"]);}) * 1000;
+    		let max_small = d3.max(vizData.fireballs, function(d){
     			let val =  parseFloat(d["Calculated Total Impact Energy (kt)"]);
     			if(val <= 1)
     				return val;
     			return 0;
     		}) * 1000;
 
-    		let min_big = d3.min(vizData, function(d){
+    		let min_big = d3.min(vizData.fireballs, function(d){
     			let val =  parseFloat(d["Calculated Total Impact Energy (kt)"]);
     			if(val > 1)
     				return val;
     			return 0;
     		}) * 1000;
-    		let max_big = d3.max(vizData, function(d){
+    		let max_big = d3.max(vizData.fireballs, function(d){
     			let val =  parseFloat(d["Calculated Total Impact Energy (kt)"]);
     			if(val > 1)
     				return val;
@@ -85,7 +85,7 @@ class Map {
 								.range([2,5]);
 			
 
-			markers = _this.fireballs.selectAll(".fireballs").data(vizData);
+			markers = _this.fireballs.selectAll(".fireballs").data(vizData.fireballs);
 			newCircle = markers.enter().append("circle");
 
 			markers.exit().remove();
@@ -104,7 +104,27 @@ class Map {
 						return bigScale(val * 1000);
 					})
 					.attr("id", (d,i)=>"fireball"+i)
-					.attr("class", d=>type);
+					.attr("class", "fireballs");
     	}
+	}
+
+	highlightMap(classH, status)
+	{
+		let _this = this;
+		if(status == "removeHighlight")
+		{
+			_this.meteors.selectAll(".meteors").classed("selected", false).classed("background", false).classed("meteors", true);
+			_this.fireballs.selectAll(".fireballs").classed("selected", false).classed("background", false).classed("fireballs", true);
+		}
+		else if(classH == "Meteorites")
+		{
+			_this.meteors.selectAll(".meteors").classed("selected", true);
+			_this.fireballs.selectAll(".fireballs").classed("background", true);
+		}
+		else if(classH == "Fireballs")
+		{
+			_this.meteors.selectAll(".meteors").classed("background", true);
+			_this.fireballs.selectAll(".fireballs").classed("selected", true);
+		}
 	}
 }
