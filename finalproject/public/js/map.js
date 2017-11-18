@@ -34,12 +34,28 @@ class Map {
 			.attr("d", path);
 	}
 
-    updateMap(vizData) {
+    updateMap(vizData, year) {
     	let _this = this;
     	let markers, newCircle;
-    	if(vizData.meteors){
+		
+		let mapData = [];
+		mapData.meteors = vizData.meteors.filter(function(d) {
+			let datetime = d.year.split(" ");
+			let date = datetime[0].split("/");
+			let dYear = date[2];
+			if (dYear === year) return d;
+		});
+		mapData.fireballs = vizData.fireballs.filter(function(d) {
+			let datetime = d["Peak Brightness Date/Time (UT)"].split(" ");
+			let date = datetime[0].split("-");
+			let dYear = date[0];
+			if (dYear === year) return d;
+		});
+		mapData.futureEvents = vizData.futureEvents;
+		
+    	if(mapData.meteors){
 			
-			markers = _this.meteors.selectAll(".meteors").data(vizData.meteors);
+			markers = _this.meteors.selectAll(".meteors").data(mapData.meteors);
 			newCircle = markers.enter().append("circle");
 
 			markers.exit().remove();
@@ -54,22 +70,22 @@ class Map {
 					.attr("r", 1)
 					.attr("class", "meteors");
     	}
-    	if(vizData.fireballs){
-    		let min_small = d3.min(vizData.fireballs, function(d){return parseFloat(d["Calculated Total Impact Energy (kt)"]);}) * 1000;
-    		let max_small = d3.max(vizData.fireballs, function(d){
+    	if(mapData.fireballs){
+    		let min_small = d3.min(mapData.fireballs, function(d){return parseFloat(d["Calculated Total Impact Energy (kt)"]);}) * 1000;
+    		let max_small = d3.max(mapData.fireballs, function(d){
     			let val =  parseFloat(d["Calculated Total Impact Energy (kt)"]);
     			if(val <= 1)
     				return val;
     			return 0;
     		}) * 1000;
 
-    		let min_big = d3.min(vizData.fireballs, function(d){
+    		let min_big = d3.min(mapData.fireballs, function(d){
     			let val =  parseFloat(d["Calculated Total Impact Energy (kt)"]);
     			if(val > 1)
     				return val;
     			return 0;
     		}) * 1000;
-    		let max_big = d3.max(vizData.fireballs, function(d){
+    		let max_big = d3.max(mapData.fireballs, function(d){
     			let val =  parseFloat(d["Calculated Total Impact Energy (kt)"]);
     			if(val > 1)
     				return val;
@@ -85,7 +101,7 @@ class Map {
 								.range([2,5]);
 			
 
-			markers = _this.fireballs.selectAll(".fireballs").data(vizData.fireballs);
+			markers = _this.fireballs.selectAll(".fireballs").data(mapData.fireballs);
 			newCircle = markers.enter().append("circle");
 
 			markers.exit().remove();

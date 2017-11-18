@@ -49,11 +49,13 @@ d3.csv("data/meteorite_landings_data.csv", function(error, data) {
     let allTableData = {"meteros": meteorite_landings_data, "fireballs": cneos_fireball_data, "futureEvents": cneos_futureimpact_data};
 	let allTimelineData = {"meteors": meteorite_landings_data, "fireballs": cneos_fireball_data_map, "futureEvents": cneos_futureimpact_data};
 	let allMapData = {"meteors": meteorite_landings_data, "fireballs": cneos_fireball_data_map};
-	map.updateMap(allMapData);
+	//map.updateMap(allMapData);
+	
+	let timeline = new Timeline(allTimelineData, map);
+	timeline.update();
 });
 
 
 /*---------------------------------------------------- Creating default visual charts ---------------------------------------------------------*/
 
-let timeline = new Timeline();
 let table = new Table(map, timeline);
