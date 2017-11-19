@@ -34,9 +34,11 @@ class Table {
 		let tr = table.enter().append("tr")
 						.on("click", (d, i)=>this.updateList(i))
 						.on("mouseover", function(d){
+							_this.timeline.update(d3.select(this).attr("id"));
 							_this.map.highlightMap(d3.select(this).attr("id"), "highlight");
 						})
 						.on("mouseout", function(d){
+							_this.timeline.update("Combined");
 							_this.map.highlightMap(d3.select(this).attr("id"), "removeHighlight");
 						});
 

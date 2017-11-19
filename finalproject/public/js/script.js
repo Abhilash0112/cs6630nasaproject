@@ -1,6 +1,10 @@
 //load the data
 let meteorite_landings_data, cneos_fireball_data, cneos_futureimpact_data, cneos_fireball_data_map = [], i = 0;
+
+/*---------------------------------------------------- Creating default visual charts ---------------------------------------------------------*/
 let map = new Map();
+let timeline;
+let table;
 
 /*---------------------------------------------------- Drawing The Map ---------------------------------------------------------*/
 d3.json("data/world.json", function (error, world) {
@@ -49,13 +53,9 @@ d3.csv("data/meteorite_landings_data.csv", function(error, data) {
     let allTableData = {"meteros": meteorite_landings_data, "fireballs": cneos_fireball_data, "futureEvents": cneos_futureimpact_data};
 	let allTimelineData = {"meteors": meteorite_landings_data, "fireballs": cneos_fireball_data_map, "futureEvents": cneos_futureimpact_data};
 	let allMapData = {"meteors": meteorite_landings_data, "fireballs": cneos_fireball_data_map};
-	//map.updateMap(allMapData);
 	
-	let timeline = new Timeline(allTimelineData, map);
-	timeline.update();
+	timeline = new Timeline(allTimelineData, map);
+	timeline.update("Combined");
+	
+	table = new Table(map, timeline);
 });
-
-
-/*---------------------------------------------------- Creating default visual charts ---------------------------------------------------------*/
-
-let table = new Table(map, timeline);
