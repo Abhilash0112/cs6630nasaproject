@@ -39,30 +39,23 @@ class Timeline {
 	
 	generateData(type) {
 		let _this = this;
-		let data = [];
+		let mData = [];
+		let fData = [];
 		let meteorCountData = _this.countEvents("meteors", "year", "/", 2);
 		let fireballCountData = _this.countEvents("fireballs", "Peak Brightness Date/Time (UT)", "-", 0);
 		
-		if (type === "Combined" || type === "Future Events") {
-			for (let key in meteorCountData) {
-				let fireballCount = 0;
-				if (fireballCountData[key] != null) {
-					fireballCount = fireballCountData[key];
-				}
-				if (parseInt(key) >= d3.min(Object.keys(fireballCountData)))
-					data.push({"year":key, "meteorCount":meteorCountData[key], "fireballCount":fireballCount});
+		for (let key in meteorCountData) {
+			let fireballCount = 0;
+			if (fireballCountData[key] != null) {
+				fireballCount = fireballCountData[key];
 			}
-		} else if (type === "Meteorites") {
-			for (let key in meteorCountData) {
-				data.push({"year":key, "meteorCount":meteorCountData[key]});
-			}
-		} else if (type === "Fireballs") {
-			for (let key in fireballCountData) {
-				data.push({"year":key, "fireballCount":fireballCountData[key]});
+			if (parseInt(key) >= d3.min(Object.keys(fireballCountData))) {
+				mData.push({"year":key, "meteorCount":meteorCountData[key]});
+				fData.push({"year":key, "fireballCount":fireballCount});
 			}
 		}
 		
-		return data;
+		return {"Meteorites":mData, "Fireballs":fData};
 	};
 	
 	update(type) {
@@ -70,37 +63,26 @@ class Timeline {
 		let data = _this.generateData(type);
 		
 		//Initialize the map
-		let minYear = d3.min(data, d => d.year);
-		let maxYear = d3.max(data, d => d.year);
+		let minYear = d3.min(data.Meteorites, d => d.year);
+		let maxYear = d3.max(data.Meteorites, d => d.year);
 		_this.map.updateMap(_this.timelineData, minYear);
 		
 		//Initialize the table
 		
 		
 		//Initialize timeline drawing variables
-		let width = 849
+		let width = 599;
 		let height = 150;
 		let xOffset = 55;
 		let yOffset = 15;
 		let mTimeline = d3.select("#meteorTimeline");
 		let fTimeline = d3.select("#fireballTimeline");
 		
-		if (type === "Meteorites") {
-			d3.select("#fireballTimeline").attr("height", 0);
-		} else {
-			d3.select("#fireballTimeline").attr("height", 200);
-		}
-		if (type === "Fireballs") {
-			d3.select("#meteorTimeline").attr("height", 0);
-		} else {
-			d3.select("#meteorTimeline").attr("height", 200);
-		}
-		
 		//Draw the year axis
 		let timeScale = d3.scaleBand()
 			.range([0, width - xOffset])
 			.padding(0.1);
-		timeScale.domain(data.map(d => d.year));
+		timeScale.domain(data.Meteorites.map(d => d.year));
 		let timeAxis = d3.axisBottom();
 		timeAxis.scale(timeScale);
 		
@@ -137,8 +119,8 @@ class Timeline {
 			});
 			
 		//Draw the count axis
-		let maxMeteorCount = d3.max(data, d => d.meteorCount);
-		let maxFireballCount = d3.max(data, d => d.fireballCount);
+		let maxMeteorCount = d3.max(data.Meteorites, d => d.meteorCount);
+		let maxFireballCount = d3.max(data.Fireballs, d => d.fireballCount);
 		let maxCount = d3.max([maxMeteorCount, maxFireballCount]);
 		
 		let mCountScale = d3.scaleLinear()
@@ -164,14 +146,18 @@ class Timeline {
 		//Draw the points
 		let meteors = mTimeline.select("#mPoints")
 			.selectAll("circle")
-			.data(data);
+			.data(data.Meteorites);
 		meteors.exit().remove();
 		meteors = meteors.enter().append("circle").merge(meteors);
 		meteors.attr("transform", function(d){
 				return "translate(" + timeScale(d.year) + ", " + (height + yOffset) + ") scale(1, -1)";
 			})
 			.attr("r", 5)
-			.style("fill", "black")
+			.style("fill", function(d) {
+				if (type === "Meteorites") return "blue";
+				else if (type === "Fireballs") return "gray";
+				else return "red";
+			})
 			.attr("cx", xOffset + timeScale.bandwidth()/2)
 			.attr("cy", function(d) {
 				return mCountScale(0) - mCountScale(d.meteorCount);
@@ -179,14 +165,18 @@ class Timeline {
 		
 		let fireballs = fTimeline.select("#fPoints")
 			.selectAll("circle")
-			.data(data);
+			.data(data.Fireballs);
 		fireballs.exit().remove();
 		fireballs = fireballs.enter().append("circle").merge(fireballs);
 		fireballs.attr("transform", function(d){
 				return "translate(" + timeScale(d.year) + ", " + (height + yOffset) + ") scale(1, -1)";
 			})
 			.attr("r", 5)
-			.style("fill", "red")
+			.style("fill", function(d) {
+				if (type === "Fireballs") return "blue";
+				else if (type === "Meteorites") return "gray";
+				else return "orange";
+			})
 			.attr("cx", xOffset + timeScale.bandwidth()/2)
 			.attr("cy", function(d) {
 				return fCountScale(0) - fCountScale(d.fireballCount);

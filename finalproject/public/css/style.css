@@ -9,7 +9,7 @@ svg {
 }
 
 .main {
-	width:90%;
+	width:80%;
 	margin:auto;
 	padding:5px;
 }
@@ -17,6 +17,16 @@ svg {
 .countries {
     stroke:#f7f7f7;
     fill:#d9d9d9;
+}
+
+#meteorTimeline {
+	display:inline;
+	float: left;
+}
+
+#fireballTimeline {
+	display:inline;
+	float: left;
 }
 
 #graticules {
