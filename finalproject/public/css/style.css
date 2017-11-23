@@ -108,6 +108,7 @@ tbody tr {
 tbody th{
     cursor:pointer;
     font-weight: bold;
+    text-align: center;
 }
 
 td {
@@ -127,4 +128,8 @@ tbody tr:hover {
 	opacity: 0.1;
 	fill: grey;
 	stroke: grey;
+}
+
+.category {
+	background-color: #e5e5e5;
 }
