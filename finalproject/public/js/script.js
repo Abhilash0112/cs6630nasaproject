@@ -55,7 +55,6 @@ d3.csv("data/meteorite_landings_data.csv", function(error, data) {
 	let allMapData = {"meteors": meteorite_landings_data, "fireballs": cneos_fireball_data_map};
 	
 	timeline = new Timeline(allTimelineData, map);
-	timeline.update("Combined");
 	
 	table = new Table(map, timeline);
 });

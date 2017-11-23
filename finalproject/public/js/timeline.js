@@ -1,14 +1,80 @@
 class Timeline {
 	/**
-     * Constructor for the Timeline
+     * Constructor for the timeline
      */
 	constructor(allTimelineData, map) {
 		this.timelineData = allTimelineData;
 		this.map = map;
+		
+		this.width = 599;
+		this.height = 150;
+		this.xOffset = 55;
+		this.yOffset = 15;
+		
+		this.countData = [];
+		
+		this.timeScale;
+		this.meteorCountScale;
+		this.fireballCountScale;
+		
+		this.initialize();
     };
 	
+	/**
+     * Initializes the timeline
+     */
+	initialize() {
+		let _this = this;
+		
+		//Generate the count data
+		_this.countData = _this.generateData();
+		
+		//Find the minimum and maximum variables
+		let minYear = d3.min(_this.countData.Meteorites, d => d.year);
+		let maxYear = d3.max(_this.countData.Meteorites, d => d.year);
+		let maxMeteorCount = d3.max(_this.countData.Meteorites, d => d.meteorCount);
+		let maxFireballCount = d3.max(_this.countData.Fireballs, d => d.fireballCount);
+		
+		/* Create the scales */
+		//years
+		_this.timeScale = d3.scaleBand()
+			.range([0, _this.width - _this.xOffset])
+			.padding(0.1);
+		_this.timeScale.domain(_this.countData.Meteorites.map(d => d.year));
+		//meteor counts
+		_this.meteorCountScale = d3.scaleLinear()
+			.domain([maxMeteorCount, 0])
+			.range([0, _this.height])
+			.nice();
+		//fireball counts
+		_this.fireballCountScale = d3.scaleLinear()
+			.domain([maxFireballCount, 0])
+			.range([0, _this.height])
+			.nice();
+		
+		//Draw the timeline
+		_this.drawAxes("meteor");
+		_this.drawAxes("fireball");
+		_this.drawLines("meteor");
+		_this.drawLines("fireball");
+		_this.drawPoints("meteor");
+		_this.drawPoints("fireball");
+		
+		//Initialize the views to the first year
+		_this.updateYear(minYear + "");
+	};
+	
+	/**
+     * Counts the number of events in the data
+	 *
+	 * @param type - The type of data, either "meteors" or "fireballs"
+	 * @param column - The name of the column in the data where the date is stored
+	 * @param character - The character used to parse the date
+	 * @param index - The index at which the parsed year can be found
+     */
 	countEvents(type, column, character, index) {
 		let _this = this;
+		
 		let result = {};
 		
 		for (let i = 0; i < _this.timelineData[type].length; i++) {
@@ -37,10 +103,15 @@ class Timeline {
 		return result;
 	};
 	
-	generateData(type) {
+	/**
+     * Returns the count data for meteorite and fireball events
+     */
+	generateData() {
 		let _this = this;
+		
 		let mData = [];
 		let fData = [];
+		
 		let meteorCountData = _this.countEvents("meteors", "year", "/", 2);
 		let fireballCountData = _this.countEvents("fireballs", "Peak Brightness Date/Time (UT)", "-", 0);
 		
@@ -58,131 +129,163 @@ class Timeline {
 		return {"Meteorites":mData, "Fireballs":fData};
 	};
 	
-	update(type) {
+	/**
+     * Draws the axes for the timeline chart
+	 *
+	 * @param type - The type of data, either "meteor" or "fireball"
+     */
+	drawAxes(type) {
 		let _this = this;
-		let data = _this.generateData(type);
 		
-		//Initialize the map
-		let minYear = d3.min(data.Meteorites, d => d.year);
-		let maxYear = d3.max(data.Meteorites, d => d.year);
-		_this.map.updateMap(_this.timelineData, minYear);
+		let timeline = d3.select("#" + type + "Timeline");
 		
-		//Initialize the table
-		
-		
-		//Initialize timeline drawing variables
-		let width = 599;
-		let height = 150;
-		let xOffset = 55;
-		let yOffset = 15;
-		let mTimeline = d3.select("#meteorTimeline");
-		let fTimeline = d3.select("#fireballTimeline");
-		
-		//Draw the year axis
-		let timeScale = d3.scaleBand()
-			.range([0, width - xOffset])
-			.padding(0.1);
-		timeScale.domain(data.Meteorites.map(d => d.year));
+		//Year axis
 		let timeAxis = d3.axisBottom();
-		timeAxis.scale(timeScale);
+		timeAxis.scale(_this.timeScale);
 		
-		mTimeline.select("#mTimeAxis")
-			.attr("transform", "translate(" + xOffset + ", " + (height + yOffset) + ")")
+		timeline.select("#" + type + "TimeAxis")
+			.attr("transform", "translate(" + _this.xOffset + ", " + (_this.height + _this.yOffset) + ")")
 			.call(timeAxis)
 			.selectAll("text")
-			.style("text-anchor", "end")
+			.attr("id", function(d) {
+				return type + d + "Text";
+			})
+			.attr("class", "unselectedYearText")
 			.attr("transform", "rotate(-90)")
 			.attr("x", -10)
 			.attr("y", -5)
 			.on("click", function(d) {
-				//Update the map
-				_this.map.updateMap(_this.timelineData, d + "");
-				
-				//Update the table
-				
+				_this.updateYear(d + "");
 			});
-			
-		fTimeline.select("#fTimeAxis")
-			.attr("transform", "translate(" + xOffset + ", " + (height + yOffset) + ")")
-			.call(timeAxis)
-			.selectAll("text")
-			.style("text-anchor", "end")
-			.attr("transform", "rotate(-90)")
-			.attr("x", -10)
-			.attr("y", -5)
+		
+		//Count axis
+		let countAxis = d3.axisLeft();
+		if (type === "meteor") countAxis.scale(_this.meteorCountScale);
+		else if (type === "fireball") countAxis.scale(_this.fireballCountScale);
+		
+		timeline.select("#" + type + "CountAxis")
+			.attr("transform", "translate(" + _this.xOffset + ", " + _this.yOffset + ")")
+			.call(countAxis);
+	};
+	
+	/**
+     * Draws the points for the timeline chart
+	 *
+	 * @param type - The type of data, either "meteor" or "fireball"
+     */
+	drawPoints(type) {
+		let _this = this;
+		
+		let timeline = d3.select("#" + type + "Timeline");
+		
+		let points = timeline.select("#" + type + "Points")
+			.selectAll("circle")
+			.data(function() {
+				if (type === "meteor") return _this.countData.Meteorites;
+				else if (type === "fireball") return _this.countData.Fireballs;
+			});
+		points.exit()
+			.remove();
+		points = points.enter()
+			.append("circle")
+			.merge(points);
+		points.attr("id", function(d) {
+				return type + d.year + "Point";
+			})
+			.attr("class", "unselectedCountPoint")
+			.attr("transform", function(d) {
+				return "translate(" + _this.timeScale(d.year) + ", " + (_this.height + _this.yOffset) + ") scale(1, -1)";
+			})
+			.style("fill", function(d) {
+				if (type === "meteor") return "red";
+				else if (type === "fireball") return "orange";
+			})
+			.attr("cx", _this.xOffset + _this.timeScale.bandwidth()/2)
+			.attr("cy", function(d) {
+				if (type === "meteor") return _this.meteorCountScale(0) - _this.meteorCountScale(d.meteorCount);
+				else if (type === "fireball") return _this.fireballCountScale(0) - _this.fireballCountScale(d.fireballCount);
+			})
 			.on("click", function(d) {
-				//Update the map
-				_this.map.updateMap(_this.timelineData, d + "");
+				_this.updateYear(d.year + "");
+			})
+			.append("svg:title")
+			.text(function(d) { 
+				if (type === "meteor") return d.meteorCount;
+				else if (type === "fireball") return d.fireballCount;
+			});
+	};
+	
+	/**
+     * Draws the lines for the timeline chart
+	 *
+	 * @param type - The type of data, either "meteor" or "fireball"
+     */
+	drawLines(type) {
+		let _this = this;
+		
+		let lineGenerator;
+		
+		if (type === "meteor") 
+			lineGenerator = d3.line()
+				.x(d => _this.xOffset + _this.timeScale(d.year) + _this.timeScale.bandwidth()/2)
+				.y(d => _this.yOffset + _this.meteorCountScale(d.meteorCount));
+		else if (type === "fireball")
+			lineGenerator = d3.line()
+				.x(d => _this.xOffset + _this.timeScale(d.year) + _this.timeScale.bandwidth()/2)
+				.y(d => _this.yOffset + _this.fireballCountScale(d.fireballCount));
+		
+		let line = d3.select("#" + type + "Lines");
+		let path = line.selectAll("path");
+		path.attr("d", function() {
+				if (type === "meteor") return lineGenerator(_this.countData.Meteorites);
+				else if (type === "fireball") return lineGenerator(_this.countData.Fireballs);
+			})
+			.attr("stroke", function() {
+				if (type === "meteor") return "red";
+				else if (type === "fireball") return "orange";
+			})
+			.attr("fill", "none");
+	};
+	
+	/**
+     * Updates the type of data selected
+	 *
+	 * @param type - The type of data
+     */
+	updateType(type) {
+		let _this = this;
+		
+		//TODO: Update the colors on the timeline to indicate which category is expanded in the table
+	};
+	
+	/**
+     * Updates the year selected
+	 *
+	 * @param year - The selected year
+     */
+	updateYear(year) {
+		let _this = this;
+		
+		//Remove the previous selection
+		d3.selectAll(".selectedYearText")
+			.attr("class", "unselectedYearText");
+		d3.selectAll(".selectedCountPoint")
+			.attr("class", "unselectedCountPoint");
+		
+		//Highlight the new selection
+		d3.select("#meteor" + year + "Text")
+			.attr("class", "selectedYearText");
+		d3.select("#fireball" + year + "Text")
+			.attr("class", "selectedYearText");
+		d3.select("#meteor" + year + "Point")
+			.attr("class", "selectedCountPoint");
+		d3.select("#fireball" + year + "Point")
+			.attr("class", "selectedCountPoint");
+			
+		//Update the map
+		_this.map.updateMap(_this.timelineData, year);
 				
-				//Update the table
-				
-			});
-			
-		//Draw the count axis
-		let maxMeteorCount = d3.max(data.Meteorites, d => d.meteorCount);
-		let maxFireballCount = d3.max(data.Fireballs, d => d.fireballCount);
-		let maxCount = d3.max([maxMeteorCount, maxFireballCount]);
-		
-		let mCountScale = d3.scaleLinear()
-			.domain([maxMeteorCount, 0])
-			.range([0, height])
-			.nice();
-		let mCountAxis = d3.axisLeft();
-		mCountAxis.scale(mCountScale);
-		mTimeline.select("#mCountAxis")
-			.attr("transform", "translate(" + xOffset + ", " + yOffset + ")")
-			.call(mCountAxis);
-		
-		let fCountScale = d3.scaleLinear()
-			.domain([maxFireballCount, 0])
-			.range([0, height])
-			.nice();
-		let fCountAxis = d3.axisLeft();
-		fCountAxis.scale(fCountScale);
-		fTimeline.select("#fCountAxis")
-			.attr("transform", "translate(" + xOffset + ", " + yOffset + ")")
-			.call(fCountAxis);
-			
-		//Draw the points
-		let meteors = mTimeline.select("#mPoints")
-			.selectAll("circle")
-			.data(data.Meteorites);
-		meteors.exit().remove();
-		meteors = meteors.enter().append("circle").merge(meteors);
-		meteors.attr("transform", function(d){
-				return "translate(" + timeScale(d.year) + ", " + (height + yOffset) + ") scale(1, -1)";
-			})
-			.attr("r", 5)
-			.style("fill", function(d) {
-				if (type === "Meteorites") return "blue";
-				else if (type === "Fireballs") return "gray";
-				else return "red";
-			})
-			.attr("cx", xOffset + timeScale.bandwidth()/2)
-			.attr("cy", function(d) {
-				return mCountScale(0) - mCountScale(d.meteorCount);
-			});
-		
-		let fireballs = fTimeline.select("#fPoints")
-			.selectAll("circle")
-			.data(data.Fireballs);
-		fireballs.exit().remove();
-		fireballs = fireballs.enter().append("circle").merge(fireballs);
-		fireballs.attr("transform", function(d){
-				return "translate(" + timeScale(d.year) + ", " + (height + yOffset) + ") scale(1, -1)";
-			})
-			.attr("r", 5)
-			.style("fill", function(d) {
-				if (type === "Fireballs") return "blue";
-				else if (type === "Meteorites") return "gray";
-				else return "orange";
-			})
-			.attr("cx", xOffset + timeScale.bandwidth()/2)
-			.attr("cy", function(d) {
-				return fCountScale(0) - fCountScale(d.fireballCount);
-			});
-			
-		//Draw the lines
+		//Update the table
 		
 	};
 }

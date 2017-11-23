@@ -14,19 +14,10 @@ svg {
 	padding:5px;
 }
 
+/* map */
 .countries {
     stroke:#f7f7f7;
     fill:#d9d9d9;
-}
-
-#meteorTimeline {
-	display:inline;
-	float: left;
-}
-
-#fireballTimeline {
-	display:inline;
-	float: left;
 }
 
 #graticules {
@@ -44,10 +35,38 @@ svg {
 .fireballs {
 	fill: orange;
 	stroke: orange;
-	stroke-width:1px;
+	stroke-width: 1px;
 	opacity: 0.6;
 }
 
+/* timeline */
+.selectedYearText {
+	text-anchor:end;
+	font-size:10pt;
+	font-weight:bold;
+}
+
+.unselectedYearText {
+	text-anchor:end;
+	font-weight:normal;
+}
+
+.selectedCountPoint {
+	r:6;
+	stroke:black;
+	stroke-width:2px;
+}
+
+.unselectedCountPoint {
+	r:4;
+	stroke:none;
+}
+
+#timelineView {
+	column-count:2;
+}
+
+/* table */
 table {
     border-collapse: collapse;
     font: 14px sans-serif;
