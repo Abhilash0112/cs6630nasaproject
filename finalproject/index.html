@@ -13,32 +13,29 @@
 <body>
 <div class="main">
 	<h1>Fireballs, Meteorites, and Future Impact Events</h1>
-
-	<div id="mapView">
-		<svg width="850" height="500">
-			<g id="map"></g>
-			<g id="graticules"></g>
-			<g id="meteors"></g>
-			<g id="fireballs"></g>
-			<g id="legend"></g>
-		</svg>
-	</div>
-
+	
 	<div id = "timelineView">
-		<span class="categoryLabel">Meteorites</span>
-		<svg width="600" height="250" id="meteorTimeline">
+		<svg width="500" height="240" id="meteorTimeline">
 			<g id="meteorCountAxis"></g>
 			<g id="meteorTimeAxis"></g>
 			<g id="meteorLines"><path></path></g>
 			<g id="meteorPoints"></g>
 		</svg>
-	
-		<span class="categoryLabel">Fireballs</span>
-		<svg width="600" height="250" id="fireballTimeline">
+		<svg width="500" height="240" id="fireballTimeline">
 			<g id="fireballCountAxis"></g>
 			<g id="fireballTimeAxis"></g>
 			<g id="fireballLines"><path></path></g>
 			<g id="fireballPoints"></g>
+		</svg>
+	</div>
+	
+	<div id="mapView">
+		<svg width="850" height="520">
+			<g id="map"></g>
+			<g id="graticules"></g>
+			<g id="meteors"></g>
+			<g id="fireballs"></g>
+			<g id="legend"></g>
 		</svg>
 	</div>
 
