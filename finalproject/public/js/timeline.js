@@ -8,7 +8,7 @@ class Timeline {
 		
 		this.width = 599;
 		this.height = 150;
-		this.xOffset = 55;
+		this.xOffset = 60;
 		this.yOffset = 15;
 		
 		this.countData = [];
@@ -157,6 +157,12 @@ class Timeline {
 			.on("click", function(d) {
 				_this.updateYear(d + "");
 			});
+			
+		timeline.append("text")
+			.text("year")
+			.attr("class", "descriptionLabel")
+			.attr("transform", "translate(" + (_this.width / 2) + ", " + (220) + ")")
+			.style("text-anchor", "middle");
 		
 		//Count axis
 		let countAxis = d3.axisLeft();
@@ -166,6 +172,12 @@ class Timeline {
 		timeline.select("#" + type + "CountAxis")
 			.attr("transform", "translate(" + _this.xOffset + ", " + _this.yOffset + ")")
 			.call(countAxis);
+			
+		timeline.append("text")
+			.text("event count")
+			.attr("class", "descriptionLabel")
+			.attr("transform", "translate(" + (5) + ", " + (_this.height / 2) + ") rotate(90)")
+			.style("text-anchor", "middle");
 	};
 	
 	/**

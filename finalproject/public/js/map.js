@@ -6,6 +6,7 @@ class Map {
 		this.projection = d3.geoEquirectangular().scale(150).translate([420, 210]);
     	this.meteors = d3.select("#meteors");
     	this.fireballs = d3.select("#fireballs");
+		this.legend = d3.select("#legend");
     };
 	
 	/**
@@ -13,12 +14,15 @@ class Map {
      * @param JSON data representing all countries
      */
     drawMap(world) {
+		let _this = this;
+		
 		let features = topojson.feature(world, world.objects.countries)
 			.features;
 		let map = d3.select("#map");
 		let path = d3.geoPath()
 			.projection(this.projection);
 		let graticule = d3.geoGraticule();
+		
 		map.selectAll("path")
 			.data(features)
 			.enter()
@@ -32,6 +36,8 @@ class Map {
 			.append("path")
 			.datum(graticule)
 			.attr("d", path);
+			
+		_this.drawLegend();
 	}
 
     updateMap(vizData, year) {
@@ -122,6 +128,60 @@ class Map {
 					.attr("id", (d,i)=>"fireball"+i)
 					.attr("class", "fireballs");
     	}
+	}
+	
+	drawLegend(){
+		let _this = this;
+		
+		let xPos = 350;
+		let yPos = 470;
+		
+		let minMeteoriteRadius = 2;
+		let minFireballRadius = 2;
+		let maxFireballRadius = 12;
+		
+		//Category labels
+		_this.legend.append("text")
+			.text("Meteorites")
+			.attr("x", xPos);
+		_this.legend.append("text")
+			.text("Fireballs")
+			.attr("x", xPos + 150);
+		_this.legend.selectAll("text")
+			.attr("y", yPos)
+			.attr("class", "categoryLabel");
+		
+		//Meteorite point
+		_this.legend.append("circle")
+			.attr("r", minMeteoriteRadius)
+			.attr("cx", xPos + 90)
+			.attr("cy", yPos - 5)
+			.attr("fill", "red");
+		
+		//Fireball points
+		_this.legend.append("circle")
+			.attr("r", minFireballRadius)
+			.attr("class", "legendFireball")
+			.attr("cy", yPos - 5);
+		_this.legend.append("circle")
+			.attr("class", "legendFireball")
+			.attr("r", maxFireballRadius)
+			.attr("cy", yPos + maxFireballRadius + 5);
+		_this.legend.selectAll(".legendFireball")
+			.attr("cx", xPos + 230)
+			.attr("fill", "orange");
+		
+		//Fireball descriptions
+		_this.legend.append("text")
+			.text("Total Impact Energy: 0.073 kilotons of TNT")
+			.attr("class", "descriptionLabel")
+			.attr("y", yPos);
+		_this.legend.append("text")
+			.text("Total Impact Energy: 440 kilotons of TNT")
+			.attr("class", "descriptionLabel")
+			.attr("y", yPos + maxFireballRadius + 10);
+		_this.legend.selectAll(".descriptionLabel")
+			.attr("x", xPos + 230 + maxFireballRadius + 5);
 	}
 
 	highlightMap(classH, status)
