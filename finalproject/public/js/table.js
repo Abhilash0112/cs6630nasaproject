@@ -17,9 +17,8 @@ class Table {
         this.bar = {
             "height": 20
         };
-      	this.table = d3.select("#numericdata").select("tbody");
+      	this.table = d3.select("#numericdata");
         this.createTable();
-        console.log(alldata);
         this.category = "";
     };
     
@@ -37,7 +36,7 @@ class Table {
 
 	createTable() {
 		let _this = this;
-		let table = _this.table.selectAll("tr")
+		let table = _this.table.select("thead").selectAll("tr")
 						.data([{"name": "Meteorites", "data": _this.alldata.meteors}, {"name": "Fireballs", "data": _this.alldata.fireballs}, {"name": "Future Events", "data":_this.alldata.futureEvents}]);
 
 		let tr = table.enter().append("tr")
@@ -90,6 +89,36 @@ class Table {
 
     }
 
+    getLeadingRows(name){
+    	let tabledata = [];
+    	if(this.category == name)
+    	{
+    		tabledata[0] = {"name": "Meteorites", "data": this.alldata.meteors};
+    		tabledata[1] = {"name": "Fireballs", "data": this.alldata.fireballs};
+			tabledata[2] = {"name": "Future Events", "data": this.alldata.futureEvents};
+    	}
+    	else if(name == "Meteorites")
+    	{
+    		tabledata[2] = {"name": "Meteorites", "data": this.alldata.meteors};
+    		tabledata[0] = {"name": "Fireballs", "data": this.alldata.fireballs};
+			tabledata[1] = {"name": "Future Events", "data": this.alldata.futureEvents};
+    	}
+    	else if(name == "Fireballs")
+    	{
+    		tabledata[0] = {"name": "Meteorites", "data": this.alldata.meteors};
+			tabledata[1] = {"name": "Future Events", "data": this.alldata.futureEvents};
+    		tabledata[2] = {"name": "Fireballs", "data": this.alldata.fireballs};
+    	}
+    	else
+    	{
+    		tabledata[0] = {"name": "Meteorites", "data": this.alldata.meteors};
+    		tabledata[1] = {"name": "Fireballs", "data": this.alldata.fireballs};
+			tabledata[2] = {"name": "Future Events", "data": this.alldata.futureEvents};
+    	}
+    	
+    	return tabledata;
+    }
+
     processTableData(year, name){
     	let _this = this;
     	let i = 0, tabledata = [];
@@ -103,7 +132,6 @@ class Table {
     	{
 	    	if(name == "Meteorites")
 	    	{
-	    		tabledata[i++] = {"name": "Meteorites", "data": _this.alldata.meteors};
 	    		tabledata[i++] = {"name": "meteorHeader", "data": ["Name", "Rec. Class", "Mass (g)", "Year", "Latitude", "Longitude"]};
 	    		for(let iter of _this.alldata.meteors)
 		    	{
@@ -112,29 +140,21 @@ class Table {
 		    			tabledata[i++] = {"name": iter.name, "data": data};
 		    		}
 		    	}
-		    	tabledata[i++] = {"name": "Fireballs", "data": _this.alldata.fireballs};
-		    	tabledata[i++] = {"name": "Future Events", "data": _this.alldata.futureEvents};
 	    	}
 	    	else if(name == "Fireballs")
 	    	{
-	    		tabledata[i++] = {"name": "Meteorites", "data": _this.alldata.meteors};
-	    		tabledata[i++] = {"name": "Fireballs", "data": _this.alldata.fireballs};
-	    		tabledata[i++] = {"name": "fireballHeader", "data": ["Date", "Peak Brightness", "Altitude (km)", "Velocity (km/s)", "Total Radiated Energy (J)", "Cal. Total Impact Energy (kt)", "Latitude", "Longitude"]};
 	    		let j = 0;
+	    		tabledata[i++] = {"name": "fireballHeader", "data": ["Date", "Peak Brightness", "Altitude (km)", "Velocity (km/s)", "Total Radiated Energy (J)", "Cal. Total Impact Energy (kt)", "Latitude", "Longitude"]};	    		
 	    		for(let iter of _this.alldata.fireballs)
 		    	{
 		    		if(iter.yr == year) {
 			    		let data = [iter.date, iter.time, iter["Altitude (km)"], iter["Velocity (km/s)"], iter["Total Radiated Energy (J)"], iter["Calculated Total Impact Energy (kt)"], iter.lat, iter.lng];
-			    		tabledata[i++] = {"name": "fireball"+(j++), "data": data};
+			    		tabledata[i++] = {"name": iter.id, "data": data};
 		    		}	
 		    	}	
-		    	tabledata[i++] = {"name": "Future Events", "data": _this.alldata.futureEvents};
 	    	}
 	    	else if(name == "Future Events")
 	    	{
-	    		tabledata[i++] = {"name": "Meteorites", "data": _this.alldata.meteors};
-	    		tabledata[i++] = {"name": "Fireballs", "data": _this.alldata.fireballs};
-	    		tabledata[i++] = {"name": "Future Events", "data": _this.alldata.futureEvents};
 	    		tabledata[i++] = {"name": "futureHeader", "data": ["Object Designation", "Year Range", "Potential Impacts", "Impact Probability", "Vinfinity (km/s)", "H (mag)", "Estimated Diameter (km)", "Palermo Scale (cum.)", "Palermo Scale (max.)", "Torino Scale (max.)"]};
 	    		for(let iter of _this.alldata.futureEvents)
 		    	{
@@ -147,145 +167,195 @@ class Table {
     	else if(action == "collapse")
     	{
     		this.category = "";
-    		tabledata[i++] = {"name": "Meteorites", "data": _this.alldata.meteors};
-    		tabledata[i++] = {"name": "Fireballs", "data": _this.alldata.fireballs};
-    		tabledata[i++] = {"name": "Future Events", "data": _this.alldata.futureEvents};
-    	}
+ 			tabledata = null;
+ 	   	}
     	return tabledata;
     }
 
-    updateList(d) {
+    getHeader(name) {
+    	let tabledata = [];
+    	if(this.category == name)
+    		tabledata = null;
+    	else if(name == "Meteorites")
+    		tabledata[0] = {"name": "meteorHeader", "data": ["Name", "Rec. Class", "Mass (g)", "Year", "Latitude", "Longitude"]};
+    	else if(name == "Fireballs")
+    		tabledata[0] = {"name": "fireballHeader", "data": ["Date", "Peak Brightness", "Altitude (km)", "Velocity (km/s)", "Total Radiated Energy (J)", "Cal. Total Impact Energy (kt)", "Latitude", "Longitude"]};	    		
+    	else
+    		tabledata[0] = {"name": "futureHeader", "data": ["Object Designation", "Year Range", 
+								    						"Potential Impacts", "Impact Probability", "Vinfinity (km/s)", "H (mag)", 
+								    						"Estimated Diameter (km)", "Palermo Scale (cum.)", "Palermo Scale (max.)", "Torino Scale (max.)"]};
+    	return "";
+    	return tabledata;
+    }
+
+    updateList(data) {
     	let _this = this;
     	let cellcenter = this.cell.height/2;
  
-    	//dataProcessing	
-    	let tabledata = this.processTableData(_this.year, d);
+    	//dataProcessing
+    	let leadingRows = this.getLeadingRows(data);
+    	let header = this.getHeader(data);
+    	let tabledata = this.processTableData(_this.year, data);
 
-    	this.tableData = tabledata;
+    	let columnSpan = {"Meteorites": 5, "Fireballs": 7, "Future Events": 9};
 
-    	let table = _this.table.selectAll("tr").data(tabledata);
-    	let tr = table.enter().append("tr");
-    	
-    	table.exit().remove();
-    	table = tr.merge(table);
+    	/*Updating data to table > thead*/
+    	if(leadingRows)
+    	{
+    		let tableHead = _this.table.select("thead").selectAll("tr").data(leadingRows);
+	    	let trHead = tableHead.enter().append("tr");
 
-    	table.attr("id", d=>d.name);
-		d3.select(".expanded").classed("expanded", false);
-		d3.select("#" + d).attr("class", "expanded");
-		
-    	/* Adding header for the expanded table */ 
-		let filter = table.filter(function(d){return (d.name == "meteorHeader") || (d.name == "fireballHeader") || (d.name == "futureHeader")})
-    	filter.on("click", null);
-    	filter.selectAll("td").remove();
-
-    	let th = filter.selectAll("th")
-    					.data(d=>d.data);
-    	let newth = th.enter()
-    					.append("th");
-
-    	th.exit().remove();
-    	th = newth.merge(th);
-
-    	th.classed("category", false)
-    		.attr("COLSPAN", 1);
-
-    	let svg = th.selectAll("svg").data(function(d){return d3.select(this).data();});
-    	let newSvg = svg.enter().append("svg")
-    						.attr("width", this.cell.width)
-							.attr("height", this.cell.height);
-
-		svg.exit().remove();
-		svg = newSvg.merge(svg);
-		
-		let textfield = svg.selectAll("text")
-						.data(function(d){return d3.select(this).data();});
-		let newtext = textfield.enter()
-								.append("text")
-								.attr("x", 2)
-								.attr("y", cellcenter);
-		
-		textfield.exit().remove();
-		textfield = newtext.merge(textfield);
-		
-		textfield.attr("width", this.cell.width)
-				.attr("height", this.cell.height)			
-				.text(d=>d);
+	    	tableHead.exit().remove();
+	    	tableHead = trHead.merge(tableHead);
 
 
-		/* Adding corresponding row click data to the expanded table */
-    	filter = table.filter(function(d){return (d.name != "Meteorites") && (d.name != "Fireballs") && (d.name != "Future Events") && (d.name != "meteorHeader") && (d.name != "fireballHeader") && (d.name != "futureHeader")});
-		filter.on("click", null);
-		filter.selectAll("th").remove();
-    	let td = filter.selectAll("td")
-    					.data(d=>d.data);
-    	let newtd = td.enter()
-    					.append("td");
+			tableHead.attr("id", d=>d.name)
+					 .on("click", function (d){
+						_this.updateList(d3.select(this).attr("id"));
+					 });
 
-    	td.exit().remove();
-    	td = newtd.merge(td);
+	    	let thHead = tableHead.selectAll("th")
+	    					.data(function(d){return d3.select(this).data();});
+	    	let newthHead = thHead.enter()
+	    				.append("th");
 
-    	svg = td.selectAll("svg").data(function(d){return d3.select(this).data();});
-    	newSvg = svg.enter().append("svg")
-    						.attr("width", this.cell.width)
-							.attr("height", this.cell.height);
+	    	thHead.exit().remove();
+	    	thHead = newthHead.merge(thHead);
 
-		svg.exit().remove();
-		svg = newSvg.merge(svg);
-		
-		textfield = svg.selectAll("text")
-						.data(function(d){return d3.select(this).data();});
-		newtext = textfield.enter()
-								.append("text")
-								.attr("x", 0)
-								.attr("y", cellcenter);
-		
-		textfield.exit().remove();
-		textfield = newtext.merge(textfield);
-		
-		textfield.attr("width", this.cell.width)
-				.attr("height", this.cell.height)			
-				.text(d=>d);
+	    	thHead.attr("class", "category").attr("COLSPAN", d=>columnSpan[d.name]);
 
+			let svgHead = thHead.selectAll("svg").data(function(d){return d3.select(this).data();});
+	    	let newSvgHead = svgHead.enter().append("svg")
+	    						.attr("width", this.cell.width)
+								.attr("height", this.cell.height);
 
-		/* Adding the three cateogies available to the table */
-		filter = table.filter(function(d){return (d.name == "Meteorites") || (d.name == "Fireballs") || (d.name == "Future Events")})
-		filter.on("click", function (d){
-			_this.chart.updateType(d3.select(this).attr("id"));
-			_this.updateList(d3.select(this).attr("id"));
-		});
-		filter.selectAll("td").remove();
-    	th = filter.selectAll("th")
-    					.data(function(d){return d3.select(this).data();});
-    	newth = th.enter()
-    				.append("th");
+			svgHead.exit().remove();
+			svgHead = newSvgHead.merge(svgHead);
+			
+			let textfieldHead = svgHead.selectAll("text")
+							.data(function(d){return d3.select(this).data();});
+			let newtextHead = textfieldHead.enter()
+									.append("text")
+									.attr("x", 0)
+									.attr("y", cellcenter);
+			
+			textfieldHead.exit().remove();
+			textfieldHead = newtextHead.merge(textfieldHead);
+			
+			textfieldHead.attr("width", this.cell.width)
+					.attr("height", this.cell.height)			
+					.text(d=>d.name);
+		}
+		else {
+			_this.table.select("thead").selectAll("tr").remove();
+		}
 
-    	th.exit().remove();
-    	th = newth.merge(th);
+		/*Updating data to table > tbody*/
+		if(header)
+    	{
+    		let tableBody = _this.table.select("tbody").selectAll("tr").data(header);
+	    	let trBody = tableBody.enter().append("tr");
 
-    	th.attr("class", "category").attr("COLSPAN", "100%");
-
-		svg = th.selectAll("svg").data(function(d){return d3.select(this).data();});
-    	newSvg = svg.enter().append("svg")
-    						.attr("width", this.cell.width)
-							.attr("height", this.cell.height);
-
-		svg.exit().remove();
-		svg = newSvg.merge(svg);
-		
-		textfield = svg.selectAll("text")
-						.data(function(d){return d3.select(this).data();});
-		newtext = textfield.enter()
-								.append("text")
-								.attr("x", 0)
-								.attr("y", cellcenter);
-		
-		textfield.exit().remove();
-		textfield = newtext.merge(textfield);
-		
-		textfield.attr("width", this.cell.width)
-				.attr("height", this.cell.height)			
-				.text(d=>d.name);
+	    	tableBody.exit().remove();
+	    	tableBody = trBody.merge(tableBody);
 
 
+			tableBody.attr("id", d=>d.name);
+
+	    	let thBody = tableBody.selectAll("th")
+	    					.data(d=>d.data);
+	    	let newthBody = thBody.enter()
+	    				.append("th");
+
+	    	thBody.exit().remove();
+	    	thBody = newthBody.merge(thBody);
+
+	    	thBody.attr("COLSPAN", 1);
+
+			let svgBody = thBody.selectAll("svg").data(function(d){return d3.select(this).data();});
+	    	let newSvgBody = svgBody.enter().append("svg")
+	    						.attr("width", this.cell.width)
+								.attr("height", this.cell.height);
+
+			svgBody.exit().remove();
+			svgBody = newSvgBody.merge(svgBody);
+			
+			let textfieldBody = svgBody.selectAll("text")
+							.data(function(d){return d3.select(this).data();});
+			let newtextBody = textfieldBody.enter()
+									.append("text")
+									.attr("x", 0)
+									.attr("y", cellcenter);
+			
+			textfieldBody.exit().remove();
+			textfieldBody = newtextBody.merge(textfieldBody);
+			
+			textfieldBody.attr("width", this.cell.width)
+					.attr("height", this.cell.height)			
+					.text(d=>d);
+		}
+		else {
+			_this.table.select("tbody").selectAll("tr").remove();
+		}
+
+		/*Updating data to table > tfoot*/
+		if(tabledata)
+		{
+	    	let tableFoot = _this.table.select("tfoot").selectAll("tr").data(tabledata);
+	    	let trFoot = tableFoot.enter().append("tr");
+	    	
+	    	tableFoot.exit().remove();
+	    	tableFoot = trFoot.merge(tableFoot);
+
+	    	tableFoot.attr("id", d=>d.name)
+	    			 .on("mouseover", function(d){
+	    			 		if(this.category != "Future Events" && d.name != "fireballHeader" && d.name != "meteorHeader")
+	    			 		{
+								_this.map.highlightObject(d.name, "highlight");
+							}
+						})
+					.on("mouseout", function(d){
+						if(this.category != "Future Events" && d.name != "fireballHeader" && d.name != "meteorHeader")
+	    			 		{
+								_this.map.highlightObject(d.name, "removeHighlight");
+							}
+						});
+
+	    	let tdFoot = tableFoot.selectAll("td")
+	    					.data(d=>d.data);
+	    	let newtdFoot = tdFoot.enter()
+	    					.append("td");
+
+	    	tdFoot.exit().remove();
+	    	tdFoot = newtdFoot.merge(tdFoot);
+
+	    	tdFoot.classed("category", false)
+	    		.attr("COLSPAN", 1);
+
+	    	let svgFoot = tdFoot.selectAll("svg").data(function(d){return d3.select(this).data();});
+	    	let newSvgFoot = svgFoot.enter().append("svg")
+	    						.attr("width", this.cell.width)
+								.attr("height", this.cell.height);
+
+			svgFoot.exit().remove();
+			svgFoot = newSvgFoot.merge(svgFoot);
+			
+			let textfieldFoot = svgFoot.selectAll("text")
+							.data(function(d){return d3.select(this).data();});
+			let newtextFoot = textfieldFoot.enter()
+									.append("text")
+									.attr("x", 2)
+									.attr("y", cellcenter);
+			
+			textfieldFoot.exit().remove();
+			textfieldFoot = newtextFoot.merge(textfieldFoot);
+			
+			textfieldFoot.attr("width", this.cell.width)
+					.attr("height", this.cell.height)			
+					.text(d=>d);
+		}
+		else{
+			_this.table.select("tfoot").selectAll("tr").remove();
+		}
     }
 }

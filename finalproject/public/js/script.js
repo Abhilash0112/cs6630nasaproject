@@ -16,6 +16,7 @@ d3.json("data/world.json", function (error, world) {
 d3.csv("data/cneos_fireball_data.csv", function(error, data) {
 	if (error) throw error;
     cneos_fireball_data = data;
+    let i = 0;
     for(let iter of cneos_fireball_data)
     {
     	let factor = 1;
@@ -47,6 +48,8 @@ d3.csv("data/cneos_fireball_data.csv", function(error, data) {
 
         if(iter["Latitude (deg.)"] && iter["Longitude (deg.)"])
             cneos_fireball_data_map[i++] = iter;	
+
+        iter["id"] = "fireball"+(i++);
     }
 });
 

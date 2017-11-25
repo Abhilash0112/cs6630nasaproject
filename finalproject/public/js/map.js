@@ -74,7 +74,8 @@ class Map {
 						return _this.projection([d.reclong, d.reclat])[1];
 					})
 					.attr("r", 1)
-					.attr("class", "meteors");
+					.attr("class", "meteors")
+					.attr("id", d=>d.name);
     	}
     	if(mapData.fireballs){
     		let min_small = d3.min(mapData.fireballs, function(d){return parseFloat(d["Calculated Total Impact Energy (kt)"]);}) * 1000;
@@ -125,7 +126,7 @@ class Map {
 							return smallScale(val * 1000);
 						return bigScale(val * 1000);
 					})
-					.attr("id", (d,i)=>"fireball"+i)
+					.attr("id", (d,i)=>d.id)
 					.attr("class", "fireballs");
     	}
 	}
@@ -204,6 +205,22 @@ class Map {
 		{
 			d3.selectAll(".meteors").classed("background", true);
 			d3.selectAll(".fireballs").classed("selected", true);
+		}
+	}
+
+	highlightObject(id, status)
+	{
+		let _this = this;
+		if(status == "removeHighlight")
+		{
+			d3.selectAll(".meteors").classed("selected", false).classed("background", false).classed("meteors", true);
+			d3.selectAll(".fireballs").classed("selected", false).classed("background", false).classed("fireballs", true);
+		}
+		else
+		{
+			d3.selectAll(".meteors").classed("background", true);
+			d3.selectAll(".fireballs").classed("background", true);
+			d3.select("#mapView").selectAll("#"+id).classed("background", false).classed("selected", true);
 		}
 	}
 }
