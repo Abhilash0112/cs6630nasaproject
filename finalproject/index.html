@@ -40,6 +40,12 @@
 	</div>
 	
 	<div id = "chartView">
+		<div id="chartSelection">
+            <label>Display:</label>
+            <select id="columnSelect" onchange="chooseData()">
+                <option>Select a category in the table to explore</option>
+            </select>
+        </div>
 		<svg width="500" height="500">
 			<g id="xAxis"></g>
 			<g id="yAxis"></g>

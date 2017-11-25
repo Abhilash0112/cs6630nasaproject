@@ -250,6 +250,7 @@ class Table {
 		/* Adding the three cateogies available to the table */
 		filter = table.filter(function(d){return (d.name == "Meteorites") || (d.name == "Fireballs") || (d.name == "Future Events")})
 		filter.on("click", function (d){
+			_this.chart.updateType(d3.select(this).attr("id"));
 			_this.updateList(d3.select(this).attr("id"));
 		});
 		filter.selectAll("td").remove();

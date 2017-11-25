@@ -317,5 +317,8 @@ class Timeline {
 			_this.table.processTableData(year, "Meteorites");
 			_this.table.processTableData(year, "Fireballs");
 		}
+		
+		//Update the chart
+		_this.chart.updateYear(year);
 	};
 }

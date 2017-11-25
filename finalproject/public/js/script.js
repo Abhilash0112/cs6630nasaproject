@@ -89,3 +89,7 @@ d3.csv("data/meteorite_landings_data.csv", function(error, data) {
 	
 	table.timeline = timeline;
 });
+
+function chooseData() {
+	chart.updateChart(document.getElementById("columnSelect").value);
+};
