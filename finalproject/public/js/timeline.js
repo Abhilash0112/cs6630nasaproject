@@ -2,10 +2,11 @@ class Timeline {
 	/**
      * Constructor for the timeline
      */
-	constructor(allTimelineData, map, table) {
+	constructor(allTimelineData, map, table, chart) {
 		this.timelineData = allTimelineData;
 		this.map = map;
 		this.table = table;
+		this.chart = chart;
 		
 		this.width = 499;
 		this.height = 150;
@@ -307,7 +308,7 @@ class Timeline {
 		_this.map.updateMap(_this.map.mapData, year);
 				
 		//Update the table
-		_this.table.year = year;
+		_this.table.yearSelected(year);
 		let expanded = d3.select(".expanded");
 		
 		if (expanded.empty() == false) {

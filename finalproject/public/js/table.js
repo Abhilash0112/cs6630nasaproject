@@ -2,10 +2,11 @@ class Table {
 	/**
      * Constructor for the Table
      */
-    constructor(map, alldata) {
+    constructor(map, alldata, chart) {
         this.map = map; 
-        this.timeline;
         this.alldata = alldata;
+		this.chart = chart;
+        this.timeline;
     	this.year = 2013;
         this.cell = {
             "width": 155,
