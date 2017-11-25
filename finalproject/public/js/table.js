@@ -20,6 +20,7 @@ class Table {
       	this.table = d3.select("#numericdata").select("tbody");
         this.createTable();
         console.log(alldata);
+        this.category = "";
     };
     
     max(a, b){
@@ -41,13 +42,13 @@ class Table {
 
 		let tr = table.enter().append("tr")
 						.on("click", function (d){
-							_this.updateList(d3.select(this).attr("id"));})
+							_this.updateList(d3.select(this).attr("id"));
+							_this.chart.updateType(d3.select(this).attr("id"));
+						})
 						.on("mouseover", function(d){
-							//_this.timeline.update(d3.select(this).attr("id"));
 							_this.map.highlightMap(d3.select(this).attr("id"), "highlight");
 						})
 						.on("mouseout", function(d){
-							//_this.timeline.update("Combined");
 							_this.map.highlightMap(d3.select(this).attr("id"), "removeHighlight");
 						});
 
@@ -92,46 +93,63 @@ class Table {
     processTableData(year, name){
     	let _this = this;
     	let i = 0, tabledata = [];
-    	if(name == "Meteorites")
+    	let action;
+    	if(this.category == name)
+    		action = "collapse";
+    	else
+    		action = "expand";
+
+    	if(action == "expand")
     	{
-    		tabledata[i++] = {"name": "Meteorites", "data": _this.alldata.meteors};
-    		tabledata[i++] = {"name": "meteorHeader", "data": ["Name", "Rec. Class", "Mass (g)", "Year", "Latitude", "Longitude"]};
-    		for(let iter of _this.alldata.meteors)
+	    	if(name == "Meteorites")
 	    	{
-	    		if(iter.yr == year) {
-	    			let data = [iter.name, iter.recclass, iter["mass (g)"], iter.yr, iter.reclat, iter.reclong];
-	    			tabledata[i++] = {"name": iter.name, "data": data};
-	    		}
+	    		tabledata[i++] = {"name": "Meteorites", "data": _this.alldata.meteors};
+	    		tabledata[i++] = {"name": "meteorHeader", "data": ["Name", "Rec. Class", "Mass (g)", "Year", "Latitude", "Longitude"]};
+	    		for(let iter of _this.alldata.meteors)
+		    	{
+		    		if(iter.yr == year) {
+		    			let data = [iter.name, iter.recclass, iter["mass (g)"], iter.yr, iter.reclat, iter.reclong];
+		    			tabledata[i++] = {"name": iter.name, "data": data};
+		    		}
+		    	}
+		    	tabledata[i++] = {"name": "Fireballs", "data": _this.alldata.fireballs};
+		    	tabledata[i++] = {"name": "Future Events", "data": _this.alldata.futureEvents};
 	    	}
-	    	tabledata[i++] = {"name": "Fireballs", "data": _this.alldata.fireballs};
-	    	tabledata[i++] = {"name": "Future Events", "data": _this.alldata.futureEvents};
-    	}
-    	else if(name == "Fireballs")
-    	{
-    		tabledata[i++] = {"name": "Meteorites", "data": _this.alldata.meteors};
-    		tabledata[i++] = {"name": "Fireballs", "data": _this.alldata.fireballs};
-    		tabledata[i++] = {"name": "fireballHeader", "data": ["Date", "Peak Brightness", "Altitude (km)", "Velocity (km/s)", "Total Radiated Energy (J)", "Cal. Total Impact Energy (kt)", "Latitude", "Longitude"]};
-    		let j = 0;
-    		for(let iter of _this.alldata.fireballs)
+	    	else if(name == "Fireballs")
 	    	{
-	    		if(iter.yr == year) {
-		    		let data = [iter.date, iter.time, iter["Altitude (km)"], iter["Velocity (km/s)"], iter["Total Radiated Energy (J)"], iter["Calculated Total Impact Energy (kt)"], iter.lat, iter.lng];
-		    		tabledata[i++] = {"name": "fireball"+(j++), "data": data};
-	    		}	
-	    	}	
-	    	tabledata[i++] = {"name": "Future Events", "data": _this.alldata.futureEvents};
+	    		tabledata[i++] = {"name": "Meteorites", "data": _this.alldata.meteors};
+	    		tabledata[i++] = {"name": "Fireballs", "data": _this.alldata.fireballs};
+	    		tabledata[i++] = {"name": "fireballHeader", "data": ["Date", "Peak Brightness", "Altitude (km)", "Velocity (km/s)", "Total Radiated Energy (J)", "Cal. Total Impact Energy (kt)", "Latitude", "Longitude"]};
+	    		let j = 0;
+	    		for(let iter of _this.alldata.fireballs)
+		    	{
+		    		if(iter.yr == year) {
+			    		let data = [iter.date, iter.time, iter["Altitude (km)"], iter["Velocity (km/s)"], iter["Total Radiated Energy (J)"], iter["Calculated Total Impact Energy (kt)"], iter.lat, iter.lng];
+			    		tabledata[i++] = {"name": "fireball"+(j++), "data": data};
+		    		}	
+		    	}	
+		    	tabledata[i++] = {"name": "Future Events", "data": _this.alldata.futureEvents};
+	    	}
+	    	else if(name == "Future Events")
+	    	{
+	    		tabledata[i++] = {"name": "Meteorites", "data": _this.alldata.meteors};
+	    		tabledata[i++] = {"name": "Fireballs", "data": _this.alldata.fireballs};
+	    		tabledata[i++] = {"name": "Future Events", "data": _this.alldata.futureEvents};
+	    		tabledata[i++] = {"name": "futureHeader", "data": ["Object Designation", "Year Range", "Potential Impacts", "Impact Probability", "Vinfinity (km/s)", "H (mag)", "Estimated Diameter (km)", "Palermo Scale (cum.)", "Palermo Scale (max.)", "Torino Scale (max.)"]};
+	    		for(let iter of _this.alldata.futureEvents)
+		    	{
+		    		let data = [iter["Object Designation  "], iter["Year Range  "], iter["Potential Impacts  "], iter["Impact Probability (cumulative)"], iter["Vinfinity (km/s)"], iter["H (mag)"], iter["Estimated Diameter (km)"], iter["Palermo Scale (cum.)"], iter["Palermo Scale (max.)"], iter["Torino Scale (max.)"] ];
+		    		tabledata[i++] = {"name": iter["Object Designation  "], "data": data};
+		    	}		
+	    	}
+	    	this.category = name;
     	}
-    	else if(name == "Future Events")
+    	else if(action == "collapse")
     	{
+    		this.category = "";
     		tabledata[i++] = {"name": "Meteorites", "data": _this.alldata.meteors};
     		tabledata[i++] = {"name": "Fireballs", "data": _this.alldata.fireballs};
     		tabledata[i++] = {"name": "Future Events", "data": _this.alldata.futureEvents};
-    		tabledata[i++] = {"name": "futureHeader", "data": ["Object Designation", "Year Range", "Potential Impacts", "Impact Probability", "Vinfinity (km/s)", "H (mag)", "Estimated Diameter (km)", "Palermo Scale (cum.)", "Palermo Scale (max.)", "Torino Scale (max.)"]};
-    		for(let iter of _this.alldata.futureEvents)
-	    	{
-	    		let data = [iter["Object Designation  "], iter["Year Range  "], iter["Potential Impacts  "], iter["Impact Probability (cumulative)"], iter["Vinfinity (km/s)"], iter["H (mag)"], iter["Estimated Diameter (km)"], iter["Palermo Scale (cum.)"], iter["Palermo Scale (max.)"], iter["Torino Scale (max.)"] ];
-	    		tabledata[i++] = {"name": iter["Object Designation  "], "data": data};
-	    	}		
     	}
     	return tabledata;
     }
@@ -139,8 +157,10 @@ class Table {
     updateList(d) {
     	let _this = this;
     	let cellcenter = this.cell.height/2;
-    	//dataProcessing
+ 
+    	//dataProcessing	
     	let tabledata = this.processTableData(_this.year, d);
+
     	this.tableData = tabledata;
 
     	let table = _this.table.selectAll("tr").data(tabledata);

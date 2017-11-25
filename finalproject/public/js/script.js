@@ -3,7 +3,7 @@ let meteorite_landings_data, cneos_fireball_data, cneos_futureimpact_data, cneos
 
 /*---------------------------------------------------- Creating default visual charts ---------------------------------------------------------*/
 let map = new Map();
-let chart = new Chart();
+let chart;
 let timeline;
 let table;
 
@@ -83,7 +83,7 @@ d3.csv("data/meteorite_landings_data.csv", function(error, data) {
 	let allMapData = {"meteors": meteorite_landings_data_map, "fireballs": cneos_fireball_data_map};
 	
 	map.mapData = allMapData;
-	
+	chart = new Chart(allTableData);
 	table = new Table(map, allTableData, chart);
 	timeline = new Timeline(allTimelineData, map, table, chart);
 	

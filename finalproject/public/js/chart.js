@@ -2,8 +2,9 @@ class Chart {
 	/**
      * Constructor for the chart
      */
-	constructor() {
-		
+	constructor(allData) {
+		this.allData = allData;
+		this.category;
     };
 	
 	/**
@@ -22,6 +23,7 @@ class Chart {
 	 */
 	updateType(type) {
 		//TODO: Update the chart to show the expanded category of data in the table
+		this.category = type;
 	};
 	
 	/**
