@@ -153,6 +153,7 @@ class Map {
 		
 		//Meteorite point
 		_this.legend.append("circle")
+			.attr("class", "meteors")
 			.attr("r", minMeteoriteRadius)
 			.attr("cx", xPos + 90)
 			.attr("cy", yPos - 5)
@@ -160,11 +161,13 @@ class Map {
 		
 		//Fireball points
 		_this.legend.append("circle")
+			.classed("fireballs", true)
+			.classed("legendFireball", true)
 			.attr("r", minFireballRadius)
-			.attr("class", "legendFireball")
 			.attr("cy", yPos - 5);
 		_this.legend.append("circle")
-			.attr("class", "legendFireball")
+			.classed("fireballs", true)
+			.classed("legendFireball", true)
 			.attr("r", maxFireballRadius)
 			.attr("cy", yPos + maxFireballRadius + 5);
 		_this.legend.selectAll(".legendFireball")
@@ -189,18 +192,18 @@ class Map {
 		let _this = this;
 		if(status == "removeHighlight")
 		{
-			_this.meteors.selectAll(".meteors").classed("selected", false).classed("background", false).classed("meteors", true);
-			_this.fireballs.selectAll(".fireballs").classed("selected", false).classed("background", false).classed("fireballs", true);
+			d3.selectAll(".meteors").classed("selected", false).classed("background", false).classed("meteors", true);
+			d3.selectAll(".fireballs").classed("selected", false).classed("background", false).classed("fireballs", true);
 		}
 		else if(classH == "Meteorites")
 		{
-			_this.meteors.selectAll(".meteors").classed("selected", true);
-			_this.fireballs.selectAll(".fireballs").classed("background", true);
+			d3.selectAll(".meteors").classed("selected", true);
+			d3.selectAll(".fireballs").classed("background", true);
 		}
 		else if(classH == "Fireballs")
 		{
-			_this.meteors.selectAll(".meteors").classed("background", true);
-			_this.fireballs.selectAll(".fireballs").classed("selected", true);
+			d3.selectAll(".meteors").classed("background", true);
+			d3.selectAll(".fireballs").classed("selected", true);
 		}
 	}
 }

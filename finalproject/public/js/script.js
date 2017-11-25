@@ -59,6 +59,7 @@ d3.csv("data/cneos_futureimpact_data.csv", function(error, data) {
 d3.csv("data/meteorite_landings_data.csv", function(error, data) {
 	if (error) throw error;
     meteorite_landings_data = data;
+	let meteorite_landings_data_map = [];
     for(let iter of meteorite_landings_data)
     {
         if(iter.year != "" || iter.year != " "){
@@ -70,15 +71,20 @@ d3.csv("data/meteorite_landings_data.csv", function(error, data) {
                 iter["reclat"] = "-";
             if(parseFloat(iter["reclong"]) ==  0.000000)
                 iter["reclong"] = "-";
-               
+            
+			if (iter["reclat"] != "-" && iter["reclong"] != "-")
+				meteorite_landings_data_map.push(iter);
         }
     }
 
     let allTableData = {"meteors": meteorite_landings_data, "fireballs": cneos_fireball_data, "futureEvents": cneos_futureimpact_data};
-	let allTimelineData = {"meteors": meteorite_landings_data, "fireballs": cneos_fireball_data_map, "futureEvents": cneos_futureimpact_data};
-	let allMapData = {"meteors": meteorite_landings_data, "fireballs": cneos_fireball_data_map};
+	let allTimelineData = {"meteors": meteorite_landings_data, "fireballs": cneos_fireball_data, "futureEvents": cneos_futureimpact_data};
+	let allMapData = {"meteors": meteorite_landings_data_map, "fireballs": cneos_fireball_data_map};
 	
-	timeline = new Timeline(allTimelineData, map);
+	map.mapData = allMapData;
 	
-	table = new Table(map, timeline, allTableData);
+	table = new Table(map, allTableData);
+	timeline = new Timeline(allTimelineData, map, table);
+	
+	table.timeline = timeline;
 });

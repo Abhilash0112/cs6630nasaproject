@@ -2,9 +2,10 @@ class Timeline {
 	/**
      * Constructor for the timeline
      */
-	constructor(allTimelineData, map) {
+	constructor(allTimelineData, map, table) {
 		this.timelineData = allTimelineData;
 		this.map = map;
+		this.table = table;
 		
 		this.width = 499;
 		this.height = 150;
@@ -303,9 +304,17 @@ class Timeline {
 			.attr("class", "selectedCountPoint");
 			
 		//Update the map
-		_this.map.updateMap(_this.timelineData, year);
+		_this.map.updateMap(_this.map.mapData, year);
 				
 		//Update the table
+		_this.table.year = year;
+		let expanded = d3.select(".expanded");
 		
+		if (expanded.empty() == false) {
+			_this.table.updateList(expanded.attr("id"));
+		} else {
+			_this.table.processTableData(year, "Meteorites");
+			_this.table.processTableData(year, "Fireballs");
+		}
 	};
 }

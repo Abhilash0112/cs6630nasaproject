@@ -2,10 +2,9 @@ class Table {
 	/**
      * Constructor for the Table
      */
-    constructor(map, timeline, alldata) {
-
+    constructor(map, alldata) {
         this.map = map; 
-        this.timeline = timeline;
+        this.timeline;
         this.alldata = alldata;
     	this.year = 2013;
         this.cell = {
@@ -150,7 +149,9 @@ class Table {
     	table = tr.merge(table);
 
     	table.attr("id", d=>d.name);
-
+		d3.select(".expanded").classed("expanded", false);
+		d3.select("#" + d).attr("class", "expanded");
+		
     	/* Adding header for the expanded table */ 
 		let filter = table.filter(function(d){return (d.name == "meteorHeader") || (d.name == "fireballHeader") || (d.name == "futureHeader")})
     	filter.on("click", null);
