@@ -8,10 +8,10 @@ class Chart {
 		this.category = "meteors";
 		this.year = 1988;
 		
-		this.width = 499;
-		this.height = 400;
+		this.width = 450;
+		this.height = 300;
 		this.xOffset = 60;
-		this.yOffset = 50;
+		this.yOffset = 20;
 		
 		this.xScale;
 		this.yScale;
@@ -22,18 +22,88 @@ class Chart {
 	 *
 	 * @param column - The column of data to visualize
 	 */
-	updateChart(column) {
+	updateChart(data) {
 		let _this = this;
 		
+		let chart = d3.select("#compChart");
+		let countMin = d3.min(data, d => d.count);
+		let countMax = d3.max(data, d => d.count);
+		
+		//Create the scales
 		_this.xScale = d3.scaleBand()
 			.range([0, _this.width - _this.xOffset])
 			.padding(0.1);
-		_this.xScale.domain(_this.selectedData.map(d => d[column]));
+		_this.xScale.domain(data.map(d => d.bucket));
 		
 		_this.yScale = d3.scaleLinear()
-			.domain([0, 0])
+			.domain([countMax, 0])
 			.range([0, _this.height])
 			.nice();
+		
+		//Draw the bucket/x axis
+		let xAxis = d3.axisBottom();
+		xAxis.scale(_this.xScale);
+		
+		chart.select("#xAxis")
+			.attr("transform", "translate(" + _this.xOffset + ", " + (_this.height + _this.yOffset) + ")")
+			.call(xAxis)
+			.selectAll("text")
+			.style("text-anchor", "end")
+			.attr("transform", "rotate(-90)")
+			.attr("x", -10)
+			.attr("y", -5);
+		
+		//Draw the count/y axis
+		let yAxis = d3.axisLeft();
+		yAxis.scale(_this.yScale);
+		
+		chart.select("#yAxis")
+			.attr("transform", "translate(" + _this.xOffset + ", " + _this.yOffset + ")")
+			.call(yAxis);
+		
+		chart.selectAll(".descriptionLabel").remove();
+		chart.append("text")
+			.text("count")
+			.attr("class", "descriptionLabel")
+			.attr("transform", "translate(" + (5) + ", " + (_this.yOffset + _this.height / 2) + ") rotate(90)")
+			.style("text-anchor", "middle");
+		
+		//Plot the points
+		let points = chart.select("#dataPoints")
+			.selectAll("circle")
+			.data(data);
+		points.exit()
+			.remove();
+		points = points.enter()
+			.append("circle")
+			.merge(points);
+			
+		points.attr("transform", function(d) {
+				return "translate(" + _this.xScale(d.bucket) + ", " + (_this.height + _this.yOffset) + ") scale(1, -1)";
+			})
+			.style("fill", "black")
+			.attr("r", 3)
+			.attr("cx", _this.xOffset + _this.xScale.bandwidth()/2)
+			.attr("cy", function(d) {
+				return _this.yScale(0) - _this.yScale(d.count);
+			})
+			.append("svg:title")
+			.text(function(d) { 
+				return d.count;
+			});
+			
+		//Draw the lines
+		let lineGenerator = d3.line()
+				.x(d => _this.xOffset + _this.xScale(d.bucket) + _this.xScale.bandwidth()/2)
+				.y(d => _this.yOffset + _this.yScale(d.count));
+		
+		let line = chart.select("#dataLines");
+		let path = line.selectAll("path");
+		path.attr("d", function() {
+				return lineGenerator(data);
+			})
+			.attr("stroke", "black")
+			.attr("fill", "none");
 	};
 	
 	/**

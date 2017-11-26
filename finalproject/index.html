@@ -40,15 +40,17 @@
 	</div>
 	<div id = "chartView">
 		<div id="chartSelection">
-            <label>Display:</label>
+            <label>Chart Display:</label>
             <select id="columnSelect" onchange="chooseData()">
-                <option>Select a category in the table to explore</option>
+				<option>Select a category in the table to explore</option>
+				<option></option>
             </select>
         </div>
-		<svg width="500" height="500">
+		<svg width="500" height="400" id="compChart">
 			<g id="xAxis"></g>
 			<g id="yAxis"></g>
-			<g id="data"></g>
+			<g id="dataLines"><path></path></g>
+			<g id="dataPoints"></g>
 		</svg>
 	</div>
 	<table width="850" height="500" id="numericdata">

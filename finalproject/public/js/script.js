@@ -94,5 +94,9 @@ d3.csv("data/meteorite_landings_data.csv", function(error, data) {
 });
 
 function chooseData() {
-	chart.updateChart(document.getElementById("columnSelect").value);
+	chart.updateChart([ {"bucket":"bucket #1", "count":25},
+						{"bucket":"bucket #2", "count":30},
+						{"bucket":"bucket #3", "count":10},
+						{"bucket":"bucket #4", "count":5},
+						{"bucket":"bucket #5", "count":50}]);
 };
