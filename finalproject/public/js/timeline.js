@@ -309,14 +309,14 @@ class Timeline {
 				
 		//Update the table
 		_this.table.yearSelected(year);
-		let expanded = d3.select(".expanded");
+		//let expanded = d3.select(".expanded");
 		
-		if (expanded.empty() == false) {
-			_this.table.updateList(expanded.attr("id"));
-		} else {
+		//if (expanded.empty() == false) {
+			_this.table.updateList("timelineUpdate");
+		/*} else {
 			_this.table.processTableData(year, "Meteorites");
 			_this.table.processTableData(year, "Fireballs");
-		}
+		}*/
 		
 		//Update the chart
 		_this.chart.updateYear(year);

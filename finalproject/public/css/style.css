@@ -87,6 +87,7 @@ table {
     border-collapse: collapse;
     font: 14px sans-serif;
     width: 850px;
+    vertical-align: right;
 }
 
 th {
@@ -95,9 +96,8 @@ th {
     padding-right: 6px;
     min-width: 125px;
 }
-
-thead td , th{
-    cursor: s-resize;
+thead tr{
+	border: 1px solid black;
 }
 
 tr {

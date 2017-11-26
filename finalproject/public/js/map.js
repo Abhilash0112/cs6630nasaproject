@@ -75,7 +75,7 @@ class Map {
 					})
 					.attr("r", 1)
 					.attr("class", "meteors")
-					.attr("id", d=>d.name);
+					.attr("id", function(d){let id = d.name.replace(/ /g, ""); return id;});
     	}
     	if(mapData.fireballs){
     		let min_small = d3.min(mapData.fireballs, function(d){return parseFloat(d["Calculated Total Impact Energy (kt)"]);}) * 1000;
@@ -208,19 +208,26 @@ class Map {
 		}
 	}
 
-	highlightObject(id, status)
+	highlightObject(id, category, status)
 	{
 		let _this = this;
 		if(status == "removeHighlight")
 		{
 			d3.selectAll(".meteors").classed("selected", false).classed("background", false).classed("meteors", true);
 			d3.selectAll(".fireballs").classed("selected", false).classed("background", false).classed("fireballs", true);
+			if(category == "Meteorites")
+				d3.selectAll("#"+id).attr("r", 1);
 		}
 		else
 		{
 			d3.selectAll(".meteors").classed("background", true);
 			d3.selectAll(".fireballs").classed("background", true);
-			d3.select("#mapView").selectAll("#"+id).classed("background", false).classed("selected", true);
+
+			let object = d3.select("#mapView").selectAll("#"+id);
+			if(category == "Meteorites")
+				object.attr("r", 5);
+			
+			object.classed("background", false).classed("selected", true);
 		}
 	}
 }

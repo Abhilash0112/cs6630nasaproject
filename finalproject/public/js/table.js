@@ -191,13 +191,18 @@ class Table {
     updateList(data) {
     	let _this = this;
     	let cellcenter = this.cell.height/2;
- 
+ 	
+ 		if(data == "timelineUpdate")
+ 		{
+ 			data = this.category;
+ 			this.category = "";
+ 		}
     	//dataProcessing
     	let leadingRows = this.getLeadingRows(data);
     	let header = this.getHeader(data);
     	let tabledata = this.processTableData(_this.year, data);
 
-    	let columnSpan = {"Meteorites": 5, "Fireballs": 7, "Future Events": 9};
+    	let columnSpan = {"Meteorites": 9, "Fireballs": 9, "Future Events": 9};
 
     	/*Updating data to table > thead*/
     	if(leadingRows)
@@ -309,15 +314,15 @@ class Table {
 
 	    	tableFoot.attr("id", d=>d.name)
 	    			 .on("mouseover", function(d){
-	    			 		if(this.category != "Future Events" && d.name != "fireballHeader" && d.name != "meteorHeader")
+	    			 		if(_this.category != "Future Events" && d.name != "fireballHeader" && d.name != "meteorHeader")
 	    			 		{
-								_this.map.highlightObject(d.name, "highlight");
+								_this.map.highlightObject(d.name.replace(/ /g, ""), _this.category, "highlight");
 							}
 						})
 					.on("mouseout", function(d){
-						if(this.category != "Future Events" && d.name != "fireballHeader" && d.name != "meteorHeader")
+						if(_this.category != "Future Events" && d.name != "fireballHeader" && d.name != "meteorHeader")
 	    			 		{
-								_this.map.highlightObject(d.name, "removeHighlight");
+								_this.map.highlightObject(d.name.replace(/ /g, ""), _this.category, "removeHighlight");
 							}
 						});
 
