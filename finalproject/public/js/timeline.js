@@ -186,7 +186,7 @@ class Timeline {
 		timeline.append("text")
 			.text("event count")
 			.attr("class", "descriptionLabel")
-			.attr("transform", "translate(" + (5) + ", " + (_this.height - 50) + ") rotate(90)")
+			.attr("transform", "translate(" + (10) + ", " + (_this.height - 50) + ") rotate(-90)")
 			.style("text-anchor", "middle");
 	};
 	

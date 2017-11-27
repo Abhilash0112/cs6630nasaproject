@@ -9,7 +9,7 @@ class Table {
         this.timeline;
     	this.year = 2013;
         this.cell = {
-            "width": 155,
+            "width": 160.2,
             "height": 20,
             "buffer": 15
         };
@@ -132,11 +132,11 @@ class Table {
     	{
 	    	if(name == "Meteorites")
 	    	{
-	    		tabledata[i++] = {"name": "meteorHeader", "data": ["Name", "Rec. Class", "Mass (g)", "Year", "Latitude", "Longitude"]};
+	    		tabledata[i++] = {"name": "meteorHeader", "data": ["Name", "Rec. Class", "Mass (g)", "Latitude", "Longitude"]};
 	    		for(let iter of _this.alldata.meteors)
 		    	{
 		    		if(iter.yr == year) {
-		    			let data = [iter.name, iter.recclass, iter["mass (g)"], iter.yr, iter.reclat, iter.reclong];
+		    			let data = [iter.name, iter.recclass, iter["mass (g)"], iter.reclat, iter.reclong];
 		    			tabledata[i++] = {"name": iter.name, "data": data};
 		    		}
 		    	}
@@ -177,7 +177,7 @@ class Table {
     	if(this.category == name)
     		tabledata = null;
     	else if(name == "Meteorites")
-    		tabledata[0] = {"name": "meteorHeader", "data": ["Name", "Rec. Class", "Mass (g)", "Year", "Latitude", "Longitude"]};
+    		tabledata[0] = {"name": "meteorHeader", "data": ["Name", "Rec. Class", "Mass (g)", "Latitude", "Longitude"]};
     	else if(name == "Fireballs")
     		tabledata[0] = {"name": "fireballHeader", "data": ["Date", "Peak Brightness", "Altitude (km)", "Velocity (km/s)", "Total Radiated Energy (J)", "Cal. Total Impact Energy (kt)", "Latitude", "Longitude"]};	    		
     	else
@@ -191,19 +191,28 @@ class Table {
     updateList(data) {
     	let _this = this;
     	let cellcenter = this.cell.height/2;
- 	
+ 		
+ 		let chartOptions = data;
+
  		if(data == "timelineUpdate")
  		{
  			data = this.category;
  			this.category = "";
  		}
+
+ 		if(data == this.category)
+ 			chartOptions = "default";
+
+		this.chart.updateType(chartOptions);
+
     	//dataProcessing
     	let leadingRows = this.getLeadingRows(data);
     	let header = this.getHeader(data);
     	let tabledata = this.processTableData(_this.year, data);
 
     	let columnSpan = {"Meteorites": 9, "Fireballs": 9, "Future Events": 9};
-
+		let columnWidth = {"Meteorites": "20%", "Fireballs": "20%", "Future Events": "20%"};
+    	
     	/*Updating data to table > thead*/
     	if(leadingRows)
     	{

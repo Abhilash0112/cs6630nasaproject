@@ -86,7 +86,10 @@ d3.csv("data/meteorite_landings_data.csv", function(error, data) {
 	let allMapData = {"meteors": meteorite_landings_data_map, "fireballs": cneos_fireball_data_map};
 	
 	map.mapData = allMapData;
-	chart = new Chart(allTableData);
+	chart = new Chart(allTableData, {"meteors": ["Select Stat.", "Number Vs. Mass (g)", "Number Vs. Rec. Class", "Location Vs. Density (selected year)"], 
+                                     "fireballs": ["Select Stat.", "Number Vs. Radiated Energy", "Number Vs. Impact Energy"], 
+                                     "futureEvents": ["NA"], 
+                                     "default" : ["Select a category in the table to explore", ""]});
 	table = new Table(map, allTableData, chart);
 	timeline = new Timeline(allTimelineData, map, table, chart);
 	
@@ -94,9 +97,6 @@ d3.csv("data/meteorite_landings_data.csv", function(error, data) {
 });
 
 function chooseData() {
-	chart.updateChart([ {"bucket":"bucket #1", "count":25},
-						{"bucket":"bucket #2", "count":30},
-						{"bucket":"bucket #3", "count":10},
-						{"bucket":"bucket #4", "count":5},
-						{"bucket":"bucket #5", "count":50}]);
+    let e = document.getElementById("columnSelect");
+    chart.updateSelection(e.selectedIndex) 
 };
