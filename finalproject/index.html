@@ -12,16 +12,16 @@
 
 <body>
 <div class="main">
-	<h1>Fireballs, Meteorites, and Future Impact Events</h1>
+	<h2>Fireballs, Meteorites, and Future Impact Events</h2>
 	
 	<div id = "timelineView">
-		<svg width="500" height="240" id="meteorTimeline">
+		<svg width="600" height="230" id="meteorTimeline">
 			<g id="meteorCountAxis"></g>
 			<g id="meteorTimeAxis"></g>
 			<g id="meteorLines"><path></path></g>
 			<g id="meteorPoints"></g>
 		</svg>
-		<svg width="500" height="240" id="fireballTimeline">
+		<svg width="600" height="230" id="fireballTimeline">
 			<g id="fireballCountAxis"></g>
 			<g id="fireballTimeAxis"></g>
 			<g id="fireballLines"><path></path></g>
@@ -30,7 +30,7 @@
 	</div>
 	
 	<div id="mapView">
-		<svg width="850" height="520">
+		<svg width="850" height="460">
 			<g id="map"></g>
 			<g id="graticules"></g>
 			<g id="meteors"></g>
@@ -38,7 +38,8 @@
 			<g id="legend"></g>
 		</svg>
 	</div>
-	<div id = "chartView">
+	
+	<div id="chartView">
 		<div id="chartSelection">
             <label>Chart Display:</label>
             <select id="columnSelect" onchange="chooseData()">
@@ -46,14 +47,14 @@
 				<option></option>
             </select>
         </div>
-		<svg width="500" height="500" id="compChart">
+		<svg width="600" height="500" id="compChart">
 			<g id="xAxis"></g>
 			<g id="yAxis"></g>
 			<g id="dataLines"><path></path></g>
 			<g id="dataPoints"></g>
 		</svg>
 	</div>
-	<table width="850" height="500" id="numericdata">
+	<table width="800" height="500" id="numericdata">
 		 <thead>
         </thead>
         <tbody>

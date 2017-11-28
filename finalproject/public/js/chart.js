@@ -9,7 +9,7 @@ class Chart {
 		this.category = "meteors";
 		this.year = 1988;
 		
-		this.width = 450;
+		this.width = 599;
 		this.height = 300;
 		this.xOffset = 60;
 		this.yOffset = 20;

@@ -8,8 +8,8 @@ class Timeline {
 		this.table = table;
 		this.chart = chart;
 		
-		this.width = 499;
-		this.height = 150;
+		this.width = 599;
+		this.height = 130;
 		this.xOffset = 60;
 		this.yOffset = 30;
 		
@@ -56,11 +56,11 @@ class Timeline {
 		
 		//Draw the timeline
 		d3.select("#meteorTimeline").append("text")
-			.text("Meteorites")
+			.text("Meteorite Timeline")
 			.attr("class", "categoryLabel")
 			.attr("y", 15);
 		d3.select("#fireballTimeline").append("text")
-			.text("Fireballs")
+			.text("Fireball Timeline")
 			.attr("class", "categoryLabel")
 			.attr("y", 15);
 		_this.drawAxes("meteor");
@@ -171,7 +171,7 @@ class Timeline {
 		timeline.append("text")
 			.text("year")
 			.attr("class", "descriptionLabel")
-			.attr("transform", "translate(" + (_this.width / 2) + ", " + (235) + ")")
+			.attr("transform", "translate(" + (_this.width / 2) + ", " + (210) + ")")
 			.style("text-anchor", "middle");
 		
 		//Count axis
@@ -186,7 +186,7 @@ class Timeline {
 		timeline.append("text")
 			.text("event count")
 			.attr("class", "descriptionLabel")
-			.attr("transform", "translate(" + (10) + ", " + (_this.height - 50) + ") rotate(-90)")
+			.attr("transform", "translate(" + (10) + ", " + (_this.yOffset + _this.height / 2) + ") rotate(-90)")
 			.style("text-anchor", "middle");
 	};
 	

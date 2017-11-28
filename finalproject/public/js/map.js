@@ -3,7 +3,7 @@ class Map {
      * Constructor for the Map
      */
 	constructor() {
-		this.projection = d3.geoEquirectangular().scale(150).translate([420, 210]);
+		this.projection = d3.geoEquirectangular().scale(125).translate([420, 190]);
     	this.meteors = d3.select("#meteors");
     	this.fireballs = d3.select("#fireballs");
 		this.legend = d3.select("#legend");
@@ -134,8 +134,8 @@ class Map {
 	drawLegend(){
 		let _this = this;
 		
-		let xPos = 350;
-		let yPos = 470;
+		let xPos = 320;
+		let yPos = 410;
 		
 		let minMeteoriteRadius = 2;
 		let minFireballRadius = 2;

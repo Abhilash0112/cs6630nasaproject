@@ -1,4 +1,4 @@
-h1 {
+h2 {
 	font-family:'Orbitron', sans-serif;
 	text-align:center;
 }
@@ -6,12 +6,6 @@ h1 {
 svg {
 	display:block;
 	margin:auto;
-}
-
-.main {
-	width:95%;
-	margin:auto;
-	padding:5px;
 }
 
 .categoryLabel {
@@ -86,7 +80,7 @@ svg {
 table {
     border-collapse: collapse;
     font: 14px sans-serif;
-    width: 850px;
+    width: 800px;
     vertical-align: right;
 }
 
@@ -105,14 +99,14 @@ tr {
 }
 
 tbody {
-	width: 850px;
+	width: 800px;
     overflow-x: auto;
 }
 
 tfoot {
 	position: absolute;
-	height: 450px;
-	width: 850px;
+	max-height: 450px;
+	width: 800px;
 	overflow-y: auto;
     overflow-x: auto;
 }
@@ -155,6 +149,6 @@ tfoot tr:hover {
 
 /* chart */
 #chartView {
-	width:500px;
+	width:650px;
 	float:left;
 }
