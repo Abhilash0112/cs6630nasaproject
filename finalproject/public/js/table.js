@@ -132,7 +132,7 @@ class Table {
     	{
 	    	if(name == "Meteorites")
 	    	{
-	    		tabledata[i++] = {"name": "meteorHeader", "data": ["Name", "Rec. Class", "Mass (g)", "Latitude", "Longitude"]};
+	    		tabledata[i++] = {"name": "meteorHeader", "data": ["Name", "Class", "Mass (g)", "Latitude", "Longitude"]};
 	    		for(let iter of _this.alldata.meteors)
 		    	{
 		    		if(iter.yr == year) {
@@ -144,7 +144,7 @@ class Table {
 	    	else if(name == "Fireballs")
 	    	{
 	    		let j = 0;
-	    		tabledata[i++] = {"name": "fireballHeader", "data": ["Date", "Peak Brightness", "Altitude (km)", "Velocity (km/s)", "Total Radiated Energy (J)", "Cal. Total Impact Energy (kt)", "Latitude", "Longitude"]};	    		
+	    		tabledata[i++] = {"name": "fireballHeader", "data": ["Date", "Time", "Altitude (km)", "Velocity (km/s)", "Radiated Energy (J)", "Impact Energy (kt)", "Latitude", "Longitude"]};	    		
 	    		for(let iter of _this.alldata.fireballs)
 		    	{
 		    		if(iter.yr == year) {
@@ -155,7 +155,7 @@ class Table {
 	    	}
 	    	else if(name == "Future Events")
 	    	{
-	    		tabledata[i++] = {"name": "futureHeader", "data": ["Object Designation", "Year Range", "Potential Impacts", "Impact Probability", "Vinfinity (km/s)", "H (mag)", "Estimated Diameter (km)", "Palermo Scale (cum.)", "Palermo Scale (max.)", "Torino Scale (max.)"]};
+	    		tabledata[i++] = {"name": "futureHeader", "data": ["Object Designation", "Year Range", "Impacts", "Probability", "Velocity (km/s)", "Mag.", "Est. Diameter (km)", "Palermo (cum.)", "Palermo (max.)", "Torino (max.)"]};
 	    		for(let iter of _this.alldata.futureEvents)
 		    	{
 		    		let data = [iter["Object Designation  "], iter["Year Range  "], iter["Potential Impacts  "], iter["Impact Probability (cumulative)"], iter["Vinfinity (km/s)"], iter["H (mag)"], iter["Estimated Diameter (km)"], iter["Palermo Scale (cum.)"], iter["Palermo Scale (max.)"], iter["Torino Scale (max.)"] ];
@@ -367,6 +367,44 @@ class Table {
 			textfieldFoot.attr("width", this.cell.width)
 					.attr("height", this.cell.height)			
 					.text(d=>d);
+					
+			if(_this.category === "Future Events") {
+				d3.select("#futureHeader")
+					.selectAll("td")
+					.data([	"Object Designation - The temporary designation or permanent number for the object.",
+							"Year Range - The time span over which impacts have been detected for the object.",
+							"Potential Impacts - The number of potential impacts detected by the JPL Sentry System.",
+							"Impact Probability (cumulative) - The sum of the impact probabilities of all detected potential impacts.",
+							"Velocity - The velocity, in kilometers per second, of the object relative to Earth, assuming a massless Earth.",
+							"Absolute Magnitude - The apparent magnitude, a measure of intrinsic brightness, of the object.",
+							"Estimated Diameter - The estimated diameter, in kilometers, of the object.",
+							"Palermo Scale (cumulative) - The cumulative hazard rating according to the Palermo technical impact hazard scale.",
+							"Palermo Scale (maximum) - The maximum hazard rating according to the Palermo technical impact hazard scale.",
+							"Torino Scale (maximum) - The maximum detected hazard rating according to the Torino impact hazard scale."])
+					.attr("title", function(d) { return d + " [3]"; });
+							
+			} else if (_this.category === "Fireballs") {
+				d3.select("#fireballHeader")
+					.selectAll("td")
+					.data([	"Date - The date of peak brightness for the event.",
+							"Time - The time of peak brightness for the event.",
+							"Altitude - The altitude, in kilometers, above the reference geoid for this event.",
+							"Velocity - The magnitude of the meteor's pre-impact velocity in kilometers per second.",
+							"Total Radiated Energy - The approximate total radiated energy of the event in Joules.",
+							"Calculated Total Impact Energy - The impact energy of the event in kilotons of TNT.",
+							"Latitude - The latitude of the event.",
+							"Longitude - The longitude of the event."])
+					.attr("title", function(d) { return d + " [2]"; });
+			} else if (_this.category === "Meteorites") {
+				d3.select("#meteorHeader")
+					.selectAll("td")
+					.data([	"Name - The name of the meteorite.",
+							"Class - The classification of the meteorite.",
+							"Mass - The mass of the meteorite in grams.",
+							"Latitude - The latitude of where the meteorite was recovered.",
+							"Longitude - The longitude of where the meteorite was recovered."])
+					.attr("title", function(d) { return d + " [1]"; });
+			}
 		}
 		else{
 			_this.table.select("tfoot").selectAll("tr").remove();
