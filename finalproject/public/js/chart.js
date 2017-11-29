@@ -99,10 +99,17 @@ class Chart {
 			.attr("cy", function(d) {
 				return _this.yScale(0) - _this.yScale(d.count);
 			})
-			.append("svg:title")
-			.text(function(d) { 
-				return d.count;
+			.on("mouseover", function(d){
+				d3.select(this)
+			        .append("title")
+			        .text(d.count);
+			})
+			.on("mouseout", function(d){
+				d3.select(this)
+			        .select("title")
+			        .remove();
 			});
+
 			
 		//Draw the lines
 		let lineGenerator = d3.line()
@@ -160,6 +167,11 @@ class Chart {
 	
 	updateSelection(index) {
 		let _this = this;
+		let min = function(x, y){
+			if (x < y) return x;
+			return y;
+		}
+
 		if(this.category == "default")
 		{
 			this.clearChart();
@@ -173,18 +185,31 @@ class Chart {
 				let chartData = [], k = 0;
 				if(index == 1)
 				{
-					let min = parseFloat(d3.min(data, function(d){return d["mass (g)"];}));
-					let max = parseFloat(d3.max(data, function(d){return d["mass (g)"];}));
+					let min = parseFloat(d3.min(data, function(d){return parseFloat(d["mass (g)"]);}));
+					let max = parseFloat(d3.max(data, function(d){return parseFloat(d["mass (g)"]);}));
 					let intervalSize = (max - min) / 10;
-					let intervals = [], bucketCount = [];
+					let intervals = [], buckets = [], bucketCount = [];
+					
+					intervals[0] = 1;
+					intervals[1] = 10;
+					intervals[2] = 100;
+					intervals[3] = 1000;
+					intervals[4] = max+1;
+
+					buckets[0] = "<1g";
+					buckets[1] = "1-10g";
+					buckets[2] = "10-100g";
+					buckets[3] = "100-1000g";
+					buckets[4] = ">1000g";
+
+						
 					for(let i = 1; i<= 10; i++)
 					{
-						intervals[i-1] = min + i * intervalSize;
 						bucketCount[i-1] = 0;
 					}
 					for(let iter of data)
 					{	
-						for(let i = 0; i< 10; i++)
+						for(let i = 0; i< 5; i++)
 						{
 							if(iter["mass (g)"] < intervals[i])
 							{
@@ -193,10 +218,9 @@ class Chart {
 							}
 						}
 					}
-					for(let i = 0; i< 10; i++)
+					for(let i = 0; i< 5; i++)
 					{
-						let bucket = parseFloat((intervals[i] - intervalSize)).toFixed(3) + " - " + parseFloat(intervals[i]).toFixed(3);
-						chartData[i] = {"bucket" : bucket, "count": bucketCount[i]};
+						chartData[i] = {"bucket" : buckets[i], "count": bucketCount[i]};
 					}
 					this.updateChart(chartData);
 				}
@@ -210,12 +234,19 @@ class Chart {
 						else
 							buckets[iter.recclass]++;
 					}
+
 					for(let iter in buckets)
 					{
 						chartData[k++] = {"bucket" : iter, "count": buckets[iter]};
 					}
-					console.log(chartData);
-					this.updateChart(chartData);
+					
+					chartData.sort(function(x, y){
+						return parseInt(x.count) - parseInt(y.count);
+					})
+
+					chartData.reverse();
+
+					this.updateChart(chartData.slice(0, min(chartData.length, 20)));
 				}
 				else if(index == 3)
 				{	
@@ -232,8 +263,14 @@ class Chart {
 					{
 						chartData[k++] = {"bucket" : iter, "count": buckets[iter]};
 					}
-					console.log(chartData);
-					this.updateChart(chartData);
+					
+					chartData.sort(function(x, y){
+						return parseInt(x.count) - parseInt(y.count);
+					})
+
+					chartData.reverse();
+
+					this.updateChart(chartData.slice(0, min(chartData.length, 20)));
 				}
 				else
 					this.clearChart();

@@ -191,20 +191,20 @@ class Table {
     updateList(data) {
     	let _this = this;
     	let cellcenter = this.cell.height/2;
- 		
- 		let chartOptions = data;
 
  		if(data == "timelineUpdate")
  		{
  			data = this.category;
  			this.category = "";
  		}
+ 		
+ 		let chartOptions = data;
 
  		if(data == this.category)
  			chartOptions = "default";
 
 		this.chart.updateType(chartOptions);
-
+		chooseData();
     	//dataProcessing
     	let leadingRows = this.getLeadingRows(data);
     	let header = this.getHeader(data);

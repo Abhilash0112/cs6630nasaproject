@@ -306,19 +306,15 @@ class Timeline {
 			
 		//Update the map
 		_this.map.updateMap(_this.map.mapData, year);
-				
-		//Update the table
-		_this.table.yearSelected(year);
-		//let expanded = d3.select(".expanded");
-		
-		//if (expanded.empty() == false) {
-			_this.table.updateList("timelineUpdate");
-		/*} else {
-			_this.table.processTableData(year, "Meteorites");
-			_this.table.processTableData(year, "Fireballs");
-		}*/
 		
 		//Update the chart
 		_this.chart.updateYear(year);
+		
+		//Update the table
+		_this.table.yearSelected(year);
+		
+		_this.table.updateList("timelineUpdate");
+	
+
 	};
 }
