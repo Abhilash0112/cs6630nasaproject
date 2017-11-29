@@ -167,7 +167,7 @@ class Chart {
 	
 	updateSelection(index) {
 		let _this = this;
-		let min = function(x, y){
+		let minVal = function(x, y){
 			if (x < y) return x;
 			return y;
 		}
@@ -179,16 +179,15 @@ class Chart {
 		else 
 		{
 			let data = this.allData[this.category].filter(function(d){if (d.yr === _this.year) return d;});
-
+			let chartData = [], k = 0;
+			let min, max, intervalSize, intervals = [], buckets = [], bucketCount = [], bucket = {};
 			if(this.category == "meteors")
 			{
-				let chartData = [], k = 0;
 				if(index == 1)
 				{
-					let min = parseFloat(d3.min(data, function(d){return parseFloat(d["mass (g)"]);}));
-					let max = parseFloat(d3.max(data, function(d){return parseFloat(d["mass (g)"]);}));
-					let intervalSize = (max - min) / 10;
-					let intervals = [], buckets = [], bucketCount = [];
+					min = parseFloat(d3.min(data, function(d){return parseFloat(d["mass (g)"]);}));
+					max = parseFloat(d3.max(data, function(d){return parseFloat(d["mass (g)"]);}));
+					intervalSize = (max - min) / 10;
 					
 					intervals[0] = 1;
 					intervals[1] = 10;
@@ -226,18 +225,17 @@ class Chart {
 				}
 				else if(index == 2)
 				{	
-					let buckets = {};
 					for(let iter of data)
 					{	
-						if(!buckets[iter.recclass])
-							buckets[iter.recclass] = 1;
+						if(!bucket[iter.recclass])
+							bucket[iter.recclass] = 1;
 						else
-							buckets[iter.recclass]++;
+							bucket[iter.recclass]++;
 					}
 
-					for(let iter in buckets)
+					for(let iter in bucket)
 					{
-						chartData[k++] = {"bucket" : iter, "count": buckets[iter]};
+						chartData[k++] = {"bucket" : iter, "count": bucket[iter]};
 					}
 					
 					chartData.sort(function(x, y){
@@ -246,22 +244,21 @@ class Chart {
 
 					chartData.reverse();
 
-					this.updateChart(chartData.slice(0, min(chartData.length, 20)));
+					this.updateChart(chartData.slice(0, minVal(chartData.length, 20)));
 				}
 				else if(index == 3)
 				{	
-					let buckets = {};
 					for(let iter of data)
 					{	
 						let key = iter.name.replace(/\d*/g,'');
-						if(!buckets[key])
-							buckets[key] = 1;
+						if(!bucket[key])
+							bucket[key] = 1;
 						else
-							buckets[key]++;
+							bucket[key]++;
 					}
-					for(let iter in buckets)
+					for(let iter in bucket)
 					{
-						chartData[k++] = {"bucket" : iter, "count": buckets[iter]};
+						chartData[k++] = {"bucket" : iter, "count": bucket[iter]};
 					}
 					
 					chartData.sort(function(x, y){
@@ -270,14 +267,95 @@ class Chart {
 
 					chartData.reverse();
 
-					this.updateChart(chartData.slice(0, min(chartData.length, 20)));
+					this.updateChart(chartData.slice(0, minVal(chartData.length, 20)));
 				}
 				else
 					this.clearChart();
 			}
 			else if(this.category == "fireballs")
 			{
+				if(index == 1)
+				{
+					let e10 = 10000000000;
+					min = parseFloat(d3.min(data, function(d){return parseFloat(d["Total Radiated Energy (J)"]);}))/e10;
+					max = parseFloat(d3.max(data, function(d){return parseFloat(d["Total Radiated Energy (J)"]);}))/e10;
+						
+					intervals[0] = 10;
+					intervals[1] = 50;
+					intervals[2] = 100;
+					intervals[3] = 250;
+					intervals[4] = max+1;
 
+					buckets[0] = "<10E10 (J)";
+					buckets[1] = "10E10-50E10 (J)";
+					buckets[2] = "50E10-100E10 (J)";
+					buckets[3] = "100E10-250E10 (J)";
+					buckets[4] = ">250E10 (J)";
+					for(let i = 1; i<= 10; i++)
+					{
+						bucketCount[i-1] = 0;
+					}
+					for(let iter of data)
+					{	
+						for(let i = 0; i< 5; i++)
+						{
+							if(iter["Total Radiated Energy (J)"]/e10 < intervals[i])
+							{
+								bucketCount[i]++;
+								break;
+							}
+						}
+					}
+					for(let i = 0; i< 5; i++)
+					{
+						chartData[i] = {"bucket" : buckets[i], "count": bucketCount[i]};
+					}
+					console.log(chartData);
+					this.updateChart(chartData);
+				}
+				else if(index == 2)
+				{	
+					min = parseFloat(d3.min(data, function(d){return parseFloat(d["Calculated Total Impact Energy (kt)"]);}));
+					max = parseFloat(d3.max(data, function(d){return parseFloat(d["Calculated Total Impact Energy (kt)"]);}));
+						
+					intervals[0] = 0.1;
+					intervals[1] = 0.5;
+					intervals[2] = 1;
+					intervals[3] = 10;
+					intervals[4] = 50;
+					intervals[5] = max+1;
+
+					buckets[0] = "<0.1 (kt)";
+					buckets[1] = "0.1-0.5 (kt)";
+					buckets[2] = "0.5-1 (kt)";
+					buckets[3] = "1-10 (kt)";
+					buckets[4] = "10-50 (kt)";
+					buckets[5] = ">50 (kt)";
+
+					for(let i = 1; i<= 10; i++)
+					{
+						bucketCount[i-1] = 0;
+					}
+					for(let iter of data)
+					{	
+						for(let i = 0; i< 6; i++)
+						{
+							if(iter["Calculated Total Impact Energy (kt)"] < intervals[i])
+							{
+								bucketCount[i]++;
+								break;
+							}
+						}
+					}
+					for(let i = 0; i< 6; i++)
+					{
+						chartData[i] = {"bucket" : buckets[i], "count": bucketCount[i]};
+					}
+					console.log(chartData);
+					this.updateChart(chartData);
+				}
+				else
+					this.clearChart();
 			}
 			else if(this.category == "futureEvents")
 				this.clearChart();
