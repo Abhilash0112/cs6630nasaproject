@@ -67,7 +67,14 @@ class Chart {
 			.attr("y", -5);
 		
 		//Draw the count/y axis
-		let yAxis = d3.axisLeft();
+		let yAxis = d3.axisLeft()
+			.tickFormat(function(d) {
+				if (Math.floor(d) != d) {
+					d3.select(this.parentNode).select("line").remove();
+					return;
+				}
+				return d;
+			});
 		yAxis.scale(_this.yScale);
 		
 		chart.select("#yAxis")
