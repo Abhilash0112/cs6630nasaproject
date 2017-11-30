@@ -10,7 +10,7 @@ class Chart {
 		this.year = 1988;
 		
 		this.width = 599;
-		this.height = 300;
+		this.height = 390;
 		this.xOffset = 60;
 		this.yOffset = 20;
 		
@@ -61,6 +61,7 @@ class Chart {
 			.call(xAxis)
 			.selectAll("text")
 			.style("text-anchor", "end")
+			.style("font-size", "9pt")
 			.attr("transform", "rotate(-90)")
 			.attr("x", -10)
 			.attr("y", -5);
@@ -94,7 +95,7 @@ class Chart {
 				return "translate(" + _this.xScale(d.bucket) + ", " + (_this.height + _this.yOffset) + ") scale(1, -1)";
 			})
 			.style("fill", "black")
-			.attr("r", 3)
+			.attr("r", 4)
 			.attr("cx", _this.xOffset + _this.xScale.bandwidth()/2)
 			.attr("cy", function(d) {
 				return _this.yScale(0) - _this.yScale(d.count);

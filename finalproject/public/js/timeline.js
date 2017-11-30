@@ -232,8 +232,35 @@ class Timeline {
 			})
 			.append("svg:title")
 			.text(function(d) { 
-				if (type === "meteor") return d.meteorCount;
-				else if (type === "fireball") return d.fireballCount;
+				if (type === "meteor") return d.year + " count = " + d.meteorCount;
+				else if (type === "fireball") return d.year + " count = " + d.fireballCount;
+			});
+			
+		points.on("mouseover", function(d){
+				let selection = d3.select(this);
+				if (selection.classed("unselectedCountPoint") == true) selection.classed("mouseOverCountPoint", true);
+				let selectionText = d3.select("#" + type + d.year + "Text");
+				if (selectionText.classed("unselectedYearText") == true) selectionText.classed("mouseOverYearText", true);
+			})
+			.on("mouseout", function(d){
+				let selection = d3.select(this);
+				if (selection.classed("unselectedCountPoint") == true) selection.classed("mouseOverCountPoint", false);
+				let selectionText = d3.select("#" + type + d.year + "Text");
+				if (selectionText.classed("unselectedYearText") == true) selectionText.classed("mouseOverYearText", false);
+			});
+			
+		d3.select("#" + type + "TimeAxis").selectAll("text")
+			.on("mouseover", function(d){
+				let selection = d3.select(this);
+				if (selection.classed("unselectedYearText") == true) selection.classed("mouseOverYearText", true);
+				let selectionPoint = d3.select("#" + type + d + "Point");
+				if (selectionPoint.classed("unselectedCountPoint") == true) selectionPoint.classed("mouseOverCountPoint", true);
+			})
+			.on("mouseout", function(d){
+				let selection = d3.select(this);
+				if (selection.classed("unselectedYearText") == true) selection.classed("mouseOverYearText", false);
+				let selectionPoint = d3.select("#" + type + d + "Point");
+				if (selectionPoint.classed("unselectedCountPoint") == true) selectionPoint.classed("mouseOverCountPoint", false);
 			});
 	};
 	
@@ -276,8 +303,6 @@ class Timeline {
      */
 	updateType(type) {
 		let _this = this;
-		
-		//TODO: Update the colors on the timeline to indicate which category is expanded in the table
 	};
 	
 	/**

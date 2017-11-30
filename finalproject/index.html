@@ -41,13 +41,12 @@
 	
 	<div id="chartView">
 		<div id="chartSelection">
-            <label>Chart Display:</label>
+            <label class="categoryLabel">Chart Display:</label>
             <select id="columnSelect" onchange="chooseData()">
 				<option>Select a category in the table to explore</option>
-				<option></option>
             </select>
         </div>
-		<svg width="600" height="500" id="compChart">
+		<svg width="600" height="550" id="compChart">
 			<g id="xAxis"></g>
 			<g id="yAxis"></g>
 			<g id="dataLines"><path></path></g>

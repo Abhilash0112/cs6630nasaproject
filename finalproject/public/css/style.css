@@ -60,6 +60,11 @@ svg {
 	font-weight:normal;
 }
 
+.mouseOverYearText {
+	text-anchor:end;
+	font-size:10pt;
+}
+
 .selectedCountPoint {
 	r:6;
 	stroke:black;
@@ -69,6 +74,12 @@ svg {
 .unselectedCountPoint {
 	r:4;
 	stroke:none;
+}
+
+.mouseOverCountPoint {
+	r:6;
+	stroke:gray;
+	stroke-width:1px;
 }
 
 #timelineView {
