@@ -34,7 +34,7 @@ class Chart {
 	 *
 	 * @param column - The column of data to visualize
 	 */
-	updateChart(data) {
+	updateChart(data, yAxisLabel = "count") {
 
 		let _this = this;
 		let chart = d3.select("#compChart");
@@ -83,9 +83,9 @@ class Chart {
 		
 		chart.selectAll(".descriptionLabel").remove();
 		chart.append("text")
-			.text("count")
+			.text(yAxisLabel)
 			.attr("class", "descriptionLabel")
-			.attr("transform", "translate(" + (7) + ", " + (_this.yOffset + _this.height / 2) + ") rotate(-90)")
+			.attr("transform", "translate(" + (10) + ", " + (_this.yOffset + _this.height / 2) + ") rotate(-90)")
 			.style("text-anchor", "middle");
 		
 		//Plot the points
@@ -168,205 +168,301 @@ class Chart {
 			});*/
 	};
 
-	/*"meteors": ["Select Stat.", "Number Vs. Mass", "Number Vs. Rec. Class", "Location Vs. Density (selected year)"], 
-      "fireballs": ["Select Stat.", "Number Vs. Radiated Energy", "Number Vs. Impact Energy"], 
-      "futureEvents": ["NA"], 
-      "default" : ["Select a category in the table to explore", ""]});*/
 	
-	updateSelection(index) {
+	meteorCharts(index)
+	{
 		let _this = this;
+		
 		let minVal = function(x, y){
 			if (x < y) return x;
 			return y;
 		}
 
+		let data = this.allData[this.category].filter(function(d){if (d.yr === _this.year) return d;});
+		let chartData = [], k = 0;
+		let min, max, intervalSize, intervals = [], buckets = [], bucketCount = [], bucket = {};
+
+		if(index == 1)
+		{
+			min = parseFloat(d3.min(data, function(d){return parseFloat(d["mass (g)"]);}));
+			max = parseFloat(d3.max(data, function(d){return parseFloat(d["mass (g)"]);}));
+			intervalSize = (max - min) / 10;
+			
+			intervals[0] = 1;
+			intervals[1] = 10;
+			intervals[2] = 100;
+			intervals[3] = 1000;
+			intervals[4] = max+1;
+
+			buckets[0] = "<1g";
+			buckets[1] = "1-10g";
+			buckets[2] = "10-100g";
+			buckets[3] = "100-1000g";
+			buckets[4] = ">1000g";
+
+				
+			for(let i = 1; i<= 10; i++)
+			{
+				bucketCount[i-1] = 0;
+			}
+			for(let iter of data)
+			{	
+				for(let i = 0; i< 5; i++)
+				{
+					if(iter["mass (g)"] < intervals[i])
+					{
+						bucketCount[i]++;
+						break;
+					}
+				}
+			}
+			for(let i = 0; i< 5; i++)
+			{
+				chartData[i] = {"bucket" : buckets[i], "count": bucketCount[i]};
+			}
+			this.updateChart(chartData);
+		}
+		else if(index == 2)
+		{	
+			for(let iter of data)
+			{	
+				if(!bucket[iter.recclass])
+					bucket[iter.recclass] = 1;
+				else
+					bucket[iter.recclass]++;
+			}
+
+			for(let iter in bucket)
+			{
+				chartData[k++] = {"bucket" : iter, "count": bucket[iter]};
+			}
+			
+			chartData.sort(function(x, y){
+				return parseInt(x.count) - parseInt(y.count);
+			})
+
+			chartData.reverse();
+
+			this.updateChart(chartData.slice(0, minVal(chartData.length, 20)));
+		}
+		else if(index == 3)
+		{	
+			for(let iter of data)
+			{	
+				let key = iter.name.replace(/\d*/g,'');
+				if(!bucket[key])
+					bucket[key] = 1;
+				else
+					bucket[key]++;
+			}
+			for(let iter in bucket)
+			{
+				chartData[k++] = {"bucket" : iter, "count": bucket[iter]};
+			}
+			
+			chartData.sort(function(x, y){
+				return parseInt(x.count) - parseInt(y.count);
+			})
+
+			chartData.reverse();
+
+			this.updateChart(chartData.slice(0, minVal(chartData.length, 20)));
+		}
+		else
+			this.clearChart();
+	}
+
+	fireballCharts(index)
+	{
+		let _this = this;
+		let data = this.allData[this.category].filter(function(d){if (d.yr === _this.year) return d;});
+		let chartData = [], k = 0;
+		let min, max, intervalSize, intervals = [], buckets = [], bucketCount = [], bucket = {};
+		if(index == 1)
+		{
+			let e10 = 10000000000, maxLength = 5;
+			min = parseFloat(d3.min(data, function(d){return parseFloat(d["Total Radiated Energy (J)"]);}))/e10;
+			max = parseFloat(d3.max(data, function(d){return parseFloat(d["Total Radiated Energy (J)"]);}))/e10;
+				
+			intervals[0] = 10;
+			intervals[1] = 50;
+			intervals[2] = 100;
+			intervals[3] = 250;
+			intervals[4] = max+1;
+
+			buckets[0] = "<10E10 (J)";
+			buckets[1] = "10E10-50E10 (J)";
+			buckets[2] = "50E10-100E10 (J)";
+			buckets[3] = "100E10-250E10 (J)";
+			buckets[4] = ">250E10 (J)";
+			for(let i = 1; i<= maxLength; i++)
+			{
+				bucketCount[i-1] = 0;
+			}
+			for(let iter of data)
+			{	
+				for(let i = 0; i< maxLength; i++)
+				{
+					if(iter["Total Radiated Energy (J)"]/e10 < intervals[i])
+					{
+						bucketCount[i]++;
+						break;
+					}
+				}
+			}
+			for(let i = 0; i< maxLength; i++)
+			{
+				chartData[i] = {"bucket" : buckets[i], "count": bucketCount[i]};
+			}
+			this.updateChart(chartData);
+		}
+		else if(index == 2)
+		{	
+			let maxLength = 6;
+			min = parseFloat(d3.min(data, function(d){return parseFloat(d["Calculated Total Impact Energy (kt)"]);}));
+			max = parseFloat(d3.max(data, function(d){return parseFloat(d["Calculated Total Impact Energy (kt)"]);}));
+				
+			intervals[0] = 0.1;
+			intervals[1] = 0.5;
+			intervals[2] = 1;
+			intervals[3] = 10;
+			intervals[4] = 50;
+			intervals[5] = max+1;
+
+			buckets[0] = "<0.1 (kt)";
+			buckets[1] = "0.1-0.5 (kt)";
+			buckets[2] = "0.5-1 (kt)";
+			buckets[3] = "1-10 (kt)";
+			buckets[4] = "10-50 (kt)";
+			buckets[5] = ">50 (kt)";
+
+			for(let i = 1; i<= maxLength; i++)
+			{
+				bucketCount[i-1] = 0;
+			}
+			for(let iter of data)
+			{	
+				for(let i = 0; i< maxLength; i++)
+				{
+					if(iter["Calculated Total Impact Energy (kt)"] < intervals[i])
+					{
+						bucketCount[i]++;
+						break;
+					}
+				}
+			}
+			for(let i = 0; i< maxLength; i++)
+			{
+				chartData[i] = {"bucket" : buckets[i], "count": bucketCount[i]};
+			}
+			this.updateChart(chartData);
+		}
+		else
+			this.clearChart();
+	}
+
+	futureEventCharts(index, maxLength = 15) {
+		let chartData = [], k = 0;
+		let futureData = this.allData[this.category], factor = 1, yscale ="", yscaleLabel ="count", status = false;
+		//ObjectDestination Vs Potential Impact
+		if(index == 1)
+		{
+			yscale = "Potential Impacts  ";
+			yscaleLabel = "Potential Impacts";
+			status = true;
+			
+		}
+		//ObjectDestination Vs Impact Probability (in E-3)
+		else if(index == 2)
+		{
+			yscale = "Impact Probability (cumulative)";
+			yscaleLabel = "Impact Probability (in terms of E-3)";
+			factor = 1000;
+			status = true;
+		}
+		//ObjectDestination Vs Vinfinity (km/s)
+		else if(index == 3)
+		{
+			yscale = "Vinfinity (km/s)";
+			yscaleLabel = "Relative Velocity w.r.t Earth (km/s)";
+			status = true;
+		}
+		//ObjectDestination Vs Magnitude
+		else if(index == 4)
+		{
+			yscale = "H (mag)";
+			yscaleLabel = "Absolute Magnitude";
+			status = true;
+		}
+		//"ObjectDestination Vs Estimated Diameter (km)"
+		else if(index == 5)
+		{
+			yscale = "Estimated Diameter (km)";
+			yscaleLabel = "Estimated Diameter (km)";
+			status = true;
+		}
+		//ObjectDestination Vs Palermo Scale (cumulative)
+		else if(index == 6)
+		{
+			yscale = "Palermo Scale (cum.)";
+			yscaleLabel = "Palermo Scale (cumulative)";
+			status = true;
+		}
+		//ObjectDestination Vs Palermo Scale (max.)
+		else if(index == 7)
+		{
+			yscale = "Palermo Scale (max.)";
+			yscaleLabel = "Palermo Scale (max.)";
+			status = true;
+		}
+		else
+		{
+			this.clearChart();
+			status = false;
+		}
+		if(status)
+		{
+			futureData.sort(function(x, y){
+				return parseFloat(x[yscale]) - parseFloat(y[yscale]);
+			})
+			futureData.reverse();
+			
+			for(let i = 0; i< maxLength; i++)
+			{
+				chartData[i] = {"bucket" : futureData[i]["Object Designation  "], "count": parseFloat(futureData[i][yscale]) * factor};
+			}
+			this.updateChart(chartData, yscaleLabel);
+		}
+	}
+
+	updateSelection(index) {
+		
+		d3.select(".categoryLabel2").style("visibility", "hidden");
+		d3.select("#columnSelect2").style("visibility", "hidden");
 		if(this.category == "default")
 		{
 			this.clearChart();
 		}
 		else 
 		{
-			let data = this.allData[this.category].filter(function(d){if (d.yr === _this.year) return d;});
-			let chartData = [], k = 0;
-			let min, max, intervalSize, intervals = [], buckets = [], bucketCount = [], bucket = {};
 			if(this.category == "meteors")
 			{
-				if(index == 1)
-				{
-					min = parseFloat(d3.min(data, function(d){return parseFloat(d["mass (g)"]);}));
-					max = parseFloat(d3.max(data, function(d){return parseFloat(d["mass (g)"]);}));
-					intervalSize = (max - min) / 10;
-					
-					intervals[0] = 1;
-					intervals[1] = 10;
-					intervals[2] = 100;
-					intervals[3] = 1000;
-					intervals[4] = max+1;
-
-					buckets[0] = "<1g";
-					buckets[1] = "1-10g";
-					buckets[2] = "10-100g";
-					buckets[3] = "100-1000g";
-					buckets[4] = ">1000g";
-
-						
-					for(let i = 1; i<= 10; i++)
-					{
-						bucketCount[i-1] = 0;
-					}
-					for(let iter of data)
-					{	
-						for(let i = 0; i< 5; i++)
-						{
-							if(iter["mass (g)"] < intervals[i])
-							{
-								bucketCount[i]++;
-								break;
-							}
-						}
-					}
-					for(let i = 0; i< 5; i++)
-					{
-						chartData[i] = {"bucket" : buckets[i], "count": bucketCount[i]};
-					}
-					this.updateChart(chartData);
-				}
-				else if(index == 2)
-				{	
-					for(let iter of data)
-					{	
-						if(!bucket[iter.recclass])
-							bucket[iter.recclass] = 1;
-						else
-							bucket[iter.recclass]++;
-					}
-
-					for(let iter in bucket)
-					{
-						chartData[k++] = {"bucket" : iter, "count": bucket[iter]};
-					}
-					
-					chartData.sort(function(x, y){
-						return parseInt(x.count) - parseInt(y.count);
-					})
-
-					chartData.reverse();
-
-					this.updateChart(chartData.slice(0, minVal(chartData.length, 20)));
-				}
-				else if(index == 3)
-				{	
-					for(let iter of data)
-					{	
-						let key = iter.name.replace(/\d*/g,'');
-						if(!bucket[key])
-							bucket[key] = 1;
-						else
-							bucket[key]++;
-					}
-					for(let iter in bucket)
-					{
-						chartData[k++] = {"bucket" : iter, "count": bucket[iter]};
-					}
-					
-					chartData.sort(function(x, y){
-						return parseInt(x.count) - parseInt(y.count);
-					})
-
-					chartData.reverse();
-
-					this.updateChart(chartData.slice(0, minVal(chartData.length, 20)));
-				}
-				else
-					this.clearChart();
+				this.meteorCharts(index);
 			}
 			else if(this.category == "fireballs")
 			{
-				if(index == 1)
-				{
-					let e10 = 10000000000;
-					min = parseFloat(d3.min(data, function(d){return parseFloat(d["Total Radiated Energy (J)"]);}))/e10;
-					max = parseFloat(d3.max(data, function(d){return parseFloat(d["Total Radiated Energy (J)"]);}))/e10;
-						
-					intervals[0] = 10;
-					intervals[1] = 50;
-					intervals[2] = 100;
-					intervals[3] = 250;
-					intervals[4] = max+1;
-
-					buckets[0] = "<10E10 (J)";
-					buckets[1] = "10E10-50E10 (J)";
-					buckets[2] = "50E10-100E10 (J)";
-					buckets[3] = "100E10-250E10 (J)";
-					buckets[4] = ">250E10 (J)";
-					for(let i = 1; i<= 10; i++)
-					{
-						bucketCount[i-1] = 0;
-					}
-					for(let iter of data)
-					{	
-						for(let i = 0; i< 5; i++)
-						{
-							if(iter["Total Radiated Energy (J)"]/e10 < intervals[i])
-							{
-								bucketCount[i]++;
-								break;
-							}
-						}
-					}
-					for(let i = 0; i< 5; i++)
-					{
-						chartData[i] = {"bucket" : buckets[i], "count": bucketCount[i]};
-					}
-					console.log(chartData);
-					this.updateChart(chartData);
-				}
-				else if(index == 2)
-				{	
-					min = parseFloat(d3.min(data, function(d){return parseFloat(d["Calculated Total Impact Energy (kt)"]);}));
-					max = parseFloat(d3.max(data, function(d){return parseFloat(d["Calculated Total Impact Energy (kt)"]);}));
-						
-					intervals[0] = 0.1;
-					intervals[1] = 0.5;
-					intervals[2] = 1;
-					intervals[3] = 10;
-					intervals[4] = 50;
-					intervals[5] = max+1;
-
-					buckets[0] = "<0.1 (kt)";
-					buckets[1] = "0.1-0.5 (kt)";
-					buckets[2] = "0.5-1 (kt)";
-					buckets[3] = "1-10 (kt)";
-					buckets[4] = "10-50 (kt)";
-					buckets[5] = ">50 (kt)";
-
-					for(let i = 1; i<= 10; i++)
-					{
-						bucketCount[i-1] = 0;
-					}
-					for(let iter of data)
-					{	
-						for(let i = 0; i< 6; i++)
-						{
-							if(iter["Calculated Total Impact Energy (kt)"] < intervals[i])
-							{
-								bucketCount[i]++;
-								break;
-							}
-						}
-					}
-					for(let i = 0; i< 6; i++)
-					{
-						chartData[i] = {"bucket" : buckets[i], "count": bucketCount[i]};
-					}
-					console.log(chartData);
-					this.updateChart(chartData);
-				}
-				else
-					this.clearChart();
+				this.fireballCharts(index);
 			}
 			else if(this.category == "futureEvents")
-				this.clearChart();
+			{
+				d3.select(".categoryLabel2").style("visibility", "visible");
+				d3.select("#columnSelect2").style("visibility", "visible");
+				let e2 = document.getElementById("columnSelect2");
+				if (e2.selectedIndex!=0)
+					this.futureEventCharts(index, parseInt(e2.options[e2.selectedIndex].value));
+				else
+					this.futureEventCharts(index);
+			}
 		}
 	}
 }

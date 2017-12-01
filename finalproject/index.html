@@ -45,8 +45,17 @@
             <select id="columnSelect" onchange="chooseData()">
 				<option>Select a category in the table to explore</option>
             </select>
+            <label class="categoryLabel2" style="visibility: hidden;">Max Data:</label>
+            <select id="columnSelect2" style="visibility: hidden;" onchange="chooseDataSize()">
+				<option>Select Size</option>
+				<option>5</option>
+				<option>10</option>
+				<option>15</option>
+				<option>20</option>
+				<option>25</option>
+            </select>
         </div>
-		<svg width="600" height="550" id="compChart">
+		<svg width="600" height="600" id="compChart">
 			<g id="xAxis"></g>
 			<g id="yAxis"></g>
 			<g id="dataLines"><path></path></g>

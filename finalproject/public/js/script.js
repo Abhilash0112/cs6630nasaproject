@@ -88,7 +88,9 @@ d3.csv("data/meteorite_landings_data.csv", function(error, data) {
 	map.mapData = allMapData;
 	chart = new Chart(allTableData, {"meteors": ["Select Stat.", "Number Vs. Mass (g)", "Number Vs. Rec. Class", "Location Vs. Density (selected year)"], 
                                      "fireballs": ["Select Stat.", "Number Vs. Radiated Energy", "Number Vs. Impact Energy"], 
-                                     "futureEvents": ["NA"], 
+                                     "futureEvents": ["Select Stat.", "ObjectDestination Vs Potential Impact", "ObjectDestination Vs Impact Probability", 
+                                                      "ObjectDestination Vs Vinfinity (km/s)", "ObjectDestination Vs Magnitude", "ObjectDestination Vs Estimated Diameter (km)"/*,
+                                                      "ObjectDestination Vs Palermo Scale (cumulative)", "ObjectDestination Vs Palermo Scale (max.)"*/], 
                                      "default" : ["Select a category in the table to explore", ""]});
 	table = new Table(map, allTableData, chart);
 	timeline = new Timeline(allTimelineData, map, table, chart);
@@ -99,4 +101,10 @@ d3.csv("data/meteorite_landings_data.csv", function(error, data) {
 function chooseData() {
     let e = document.getElementById("columnSelect");
     chart.updateSelection(e.selectedIndex) 
+};
+
+function chooseDataSize() {
+    let e1 = document.getElementById("columnSelect");
+    let e2 = document.getElementById("columnSelect2");
+    chart.futureEventCharts(e1.selectedIndex, parseInt(e2.options[e2.selectedIndex].value));
 };
