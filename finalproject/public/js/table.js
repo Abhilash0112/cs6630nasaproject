@@ -155,7 +155,7 @@ class Table {
 	    	}
 	    	else if(name == "Future Events")
 	    	{
-	    		tabledata[i++] = {"name": "futureHeader", "data": ["Object Designation", "Year Range", "Impacts", "Probability", "Velocity (km/s)", "Mag.", "Est. Diameter (km)", "Palermo (cum.)", "Palermo (max.)", "Torino (max.)"]};
+	    		tabledata[i++] = {"name": "futureHeader", "data": ["Object Designation", "Year Range", "Potential Impacts", "Probability", "Vinfinity (km/s)", "Mag.", "Est. Diameter (km)", "Palermo (cum.)", "Palermo (max.)", "Torino (max.)"]};
 	    		for(let iter of _this.alldata.futureEvents)
 		    	{
 		    		let data = [iter["Object Designation  "], iter["Year Range  "], iter["Potential Impacts  "], iter["Impact Probability (cumulative)"], iter["Vinfinity (km/s)"], iter["H (mag)"], iter["Estimated Diameter (km)"], iter["Palermo Scale (cum.)"], iter["Palermo Scale (max.)"], iter["Torino Scale (max.)"] ];

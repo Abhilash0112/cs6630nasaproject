@@ -88,10 +88,8 @@ svg {
 
 /* table */
 #tableView {
-	margin:auto;
-	width:850px;
-	max-height:500px;
-	display: block;
+	display:inline-block;
+	height:500px;
 }
 
 table {

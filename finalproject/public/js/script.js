@@ -86,10 +86,10 @@ d3.csv("data/meteorite_landings_data.csv", function(error, data) {
 	let allMapData = {"meteors": meteorite_landings_data_map, "fireballs": cneos_fireball_data_map};
 	
 	map.mapData = allMapData;
-	chart = new Chart(allTableData, {"meteors": ["Select Stat.", "Number Vs. Mass (g)", "Number Vs. Rec. Class", "Location Vs. Density (selected year)"], 
-                                     "fireballs": ["Select Stat.", "Number Vs. Radiated Energy", "Number Vs. Impact Energy"], 
-                                     "futureEvents": ["Select Stat.", "ObjectDestination Vs Potential Impact", "ObjectDestination Vs Impact Probability", 
-                                                      "ObjectDestination Vs Vinfinity (km/s)", "ObjectDestination Vs Magnitude", "ObjectDestination Vs Estimated Diameter (km)"/*,
+	chart = new Chart(allTableData, {"meteors": ["(Select Statistic)", "Number Vs. Mass (g)", "Number Vs. Class", "Number Vs. Location"], 
+                                     "fireballs": ["(Select Statistic)", "Number Vs. Radiated Energy", "Number Vs. Impact Energy"], 
+                                     "futureEvents": ["(Select Statistic)", "ObjectDesignation Vs. Potential Impacts", "ObjectDesignation Vs. Impact Probability", 
+                                                      "ObjectDesignation Vs. Vinfinity (km/s)", "ObjectDesignation Vs. Magnitude", "ObjectDesignation Vs. Estimated Diameter (km)"/*,
                                                       "ObjectDestination Vs Palermo Scale (cumulative)", "ObjectDestination Vs Palermo Scale (max.)"*/], 
                                      "default" : ["Select a category in the table to explore", ""]});
 	table = new Table(map, allTableData, chart);
