@@ -14,7 +14,7 @@ The [Screencast](https://www.youtube.com/watch?v=NXHH0_FB-sE) has a video demons
 The data is obtained from [NASA's Open Data Portal](https://data.nasa.gov/Space-Science/Meteorite-Landings/gh4g-9sfh) and [The Center for Near Earth Studies](https://cneos.jpl.nasa.gov/), which details every event. The data can be obtained in various file formats, which helps reduce the processing time required for academic projects.
 
 ### Visualization
-We have three main forms of visualizations in order to represent the dataset and provide access to different comparisions between the datasets. You can explore more [here](https://rajathjavali.github.io/cs6630nasaproject/finalproject/).
+We have three main forms of visualizations in order to represent the dataset and provide access to different comparisions between the datasets. You can explore more here(https://rajathjavali.github.io/cs6630nasaproject/finalproject/).
 
 The main form of visualization is a MAP with locations of various events highlighted. Interaction with the markers help in getting details of individual event as a tooltip. 
 
