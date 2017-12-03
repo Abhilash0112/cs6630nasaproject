@@ -4,8 +4,10 @@ This project deals with the visualization of Meteorite and Fireball events obser
 
 ### Project Links
 The [Project Website](https://rajathjavali.github.io/cs6630nasaproject/finalproject/) has the live visualization.
+
 The [Process Book](https://github.com/rajathjavali/cs6630nasaproject/blob/master/ProcessBook.pdf) has the details on the visualization and its interaction.
-The Screencast has a video demonstration of the visualization.
+
+The [Screencast](https://www.youtube.com/watch?v=NXHH0_FB-sE) has a video demonstration of the visualization.
 
 ### Data Processing
 
