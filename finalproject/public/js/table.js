@@ -190,7 +190,7 @@ class Table {
 
     updateList(data) {
     	let _this = this;
-    	let cellcenter = this.cell.height/2;
+    	let cellcenter = this.cell.height/2 + 5;
 
  		if(data == "timelineUpdate")
  		{
@@ -381,7 +381,8 @@ class Table {
 							"Palermo Scale (cumulative) - The cumulative hazard rating according to the Palermo technical impact hazard scale.",
 							"Palermo Scale (maximum) - The maximum hazard rating according to the Palermo technical impact hazard scale.",
 							"Torino Scale (maximum) - The maximum detected hazard rating according to the Torino impact hazard scale."])
-					.attr("title", function(d) { return d + " [3]"; });
+					.attr("title", function(d) { return d + " [3]"; })
+					.attr("style", "font-weight:bold");
 							
 			} else if (_this.category === "Fireballs") {
 				d3.select("#fireballHeader")
@@ -394,7 +395,9 @@ class Table {
 							"Calculated Total Impact Energy - The impact energy of the event in kilotons of TNT.",
 							"Latitude - The latitude of the event.",
 							"Longitude - The longitude of the event."])
-					.attr("title", function(d) { return d + " [2]"; });
+					.attr("title", function(d) { return d + " [2]"; })
+					.attr("style", "font-weight:bold");
+
 			} else if (_this.category === "Meteorites") {
 				d3.select("#meteorHeader")
 					.selectAll("td")
@@ -403,7 +406,8 @@ class Table {
 							"Mass - The mass of the meteorite in grams.",
 							"Latitude - The latitude of where the meteorite was recovered.",
 							"Longitude - The longitude of where the meteorite was recovered."])
-					.attr("title", function(d) { return d + " [1]"; });
+					.attr("title", function(d) { return d + " [1]"; })
+					.attr("style", "font-weight:bold");
 			}
 		}
 		else{
